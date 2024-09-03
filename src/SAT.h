@@ -55,7 +55,5 @@ status IsUnitClause(literalList l); //判断是否为单子句
 int FindUnitClause(clauseList cL); //找到单子句 
 void Simplify(clauseList &cL, int literal); //根据选择的文字化简
 int ChooseLiteral(); //(没有单子句时的策略)选择文字
-clauseList CopyCnf(clauseList cL);
-
-
+clauseList CopyCnf(clauseList cL); //复制cnf
 status DPLL(clauseList cL); //DPLL算法

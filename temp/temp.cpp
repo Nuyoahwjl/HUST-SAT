@@ -1,5 +1,3 @@
-# pragma once
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -107,12 +105,24 @@ void DisPlay()
                     printf(" You haven't open the CNF file.\n");
                     break;
                 }
-                result=(boolNode*)malloc(sizeof(boolNode)*(boolCount+1));
-                for(int i=1;i<=boolCount;i++)
+                // result=(boolNode*)malloc(sizeof(boolNode)*(boolCount+1));
+                // for(int i=1;i<=boolCount;i++)
+                // {
+                //     result[i].v=FALSE;
+                //     result[i].flag=FALSE;
+                // }
+                else if(DPLL(cL)==OK)
                 {
-                    result[i].v=FALSE;
-                    result[i].flag=FALSE;
+                    printf(" SAT\n");
+                    for(int i=0;i<=boolCount;i++)
+                    {
+                        if(result[i].v==true)
+                            printf(" %-4d: TRUE\n",i);
+                        else 
+                            printf(" %-4d: FALSE\n",i);
+                    }
                 }
+                else printf(" UNSAT\n");
                 break;
             }
             default:
@@ -446,7 +456,69 @@ int ChooseLiteral()
 //     }
 // }
 
-
+/*
+ @ 函数名称: CopyCnf
+ @ 接受参数: clauseList
+ @ 函数功能: 复制cnf
+ @ 返回值: clauseList
+ */
+clauseList CopyCnf(clauseList cL) 
+{
+    clauseList newCnf = (clauseList)malloc(sizeof(clauseNode));
+    newCnf->next = NULL;
+    clauseList p = cL->next, q = newCnf;
+    while (p) 
+    {
+        clauseList temp = (clauseList)malloc(sizeof(clauseNode));
+        temp->head = (literalList)malloc(sizeof(literalNode));
+        temp->head->next = NULL;
+        literalList l = p->head->next, m = temp->head;
+        while (l) 
+        {
+            literalList temp1 = (literalList)malloc(sizeof(literalNode));
+            temp1->literal = l->literal;
+            temp1->next = NULL;
+            m->next = temp1;
+            m = m->next;
+            l = l->next;
+        }
+        m->next = NULL;
+        temp->next = NULL;
+        q->next = temp;
+        q = q->next;
+        p = p->next;
+    }
+    return newCnf;
+}
+// clauseList CopyCnf(clauseList cL)
+// {
+// clauseList newCnf = (clauseList)malloc(sizeof(clauseNode));
+//     newCnf->head = NULL;
+//     newCnf->next = NULL;
+//     clauseList last = newCnf, p = cL->next;
+//     while (p != NULL) 
+//     {
+//         clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
+//         newClause->head = (literalList)malloc(sizeof(literalNode));
+//         newClause->next = NULL;
+//         newClause->head->next = NULL;
+//         literalList lastLiteral = newClause->head;
+//         literalList q = p->head->next;
+//         while (q != NULL) 
+//         {
+//             literalList newLiteral = (literalList)malloc(sizeof(literalNode));
+//             newLiteral->literal = q->literal;
+//             newLiteral->next = NULL;
+//             lastLiteral->next = newLiteral;
+//             lastLiteral = newLiteral;
+//             q = q->next;
+//         }
+//         last->next = newClause;
+//         last = newClause;
+//         p = p->next;
+//     }
+//     return newCnf;
+// }
 
 /*
  @ 函数名称: DPLL
@@ -454,7 +526,82 @@ int ChooseLiteral()
  @ 函数功能: DPLL算法求解SAT问题
  @ 返回值: int
  */
-// status DPLL(clauseList cL)
-// {
+status DPLL(clauseList cL)
+{
+    // 初始化结果数组
+    if (result == NULL) 
+    {
+        result = (boolNode*)malloc(sizeof(boolNode) * (boolCount + 1));
+        for (int i = 1; i <= boolCount; i++) 
+        {
+            result[i].v = false;
+            result[i].flag = false;
+        }
+    }
 
-// }
+    // 检查是否已经确定所有子句
+    clauseList p = cL->next;
+    while (p != NULL) 
+    {
+        literalList q = p->head->next;
+        bool hasUnassignedLiteral = false;
+        while (q != NULL) 
+        {
+            if (!result[abs(q->literal)].flag) 
+            {
+                hasUnassignedLiteral = true;
+                break;
+            }
+            q = q->next;
+        }
+        if (!hasUnassignedLiteral) 
+        {
+            if (p->head->next == NULL) // 空子句
+            {
+                // printf(" UNSAT\n");
+                return ERROR;
+            }
+        }
+        p = p->next;
+    }
+
+    // 找到单子句并进行推理
+    int unitLiteral = FindUnitClause(cL);
+    if (unitLiteral != 0) 
+    {
+        result[abs(unitLiteral)].v = unitLiteral > 0 ? TRUE : FALSE;
+        result[abs(unitLiteral)].flag = TRUE;
+        // 对CNF进行简化
+        Simplify(cL, unitLiteral);
+        return DPLL(cL);
+    }   
+
+    // 选择一个未赋值的文字
+    int chosenLiteral = ChooseLiteral();
+    if (chosenLiteral == 0) 
+        return OK;
+    
+
+    // 尝试将选择的文字设为真
+    result[abs(chosenLiteral)].v = chosenLiteral > 0 ? TRUE : FALSE;
+    result[abs(chosenLiteral)].flag = TRUE;
+    clauseList newCnf = CopyCnf(cL);
+    Simplify(newCnf, chosenLiteral);
+    if (DPLL(newCnf) == OK)
+        return OK;
+
+    // 尝试将选择的文字设为假
+    result[abs(chosenLiteral)].v = !(chosenLiteral > 0) ? TRUE : FALSE;
+    result[abs(chosenLiteral)].flag = TRUE;
+    DestroyCnf(newCnf);
+    newCnf = CopyCnf(cL);
+    Simplify(newCnf, -chosenLiteral);
+    if (DPLL(newCnf) == OK) 
+        return OK;
+    
+    // 无解
+    // printf(" UNSAT\n");
+    result[abs(chosenLiteral)].flag = FALSE;
+    return ERROR;
+}
+

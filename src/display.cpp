@@ -44,12 +44,28 @@ void DisPlay()
                     printf(" You haven't open the CNF file.\n");
                     break;
                 }
-                result=(boolNode*)malloc(sizeof(boolNode)*(boolCount+1));
-                for(int i=1;i<=boolCount;i++)
+                // result=(boolNode*)malloc(sizeof(boolNode)*(boolCount+1));
+                // for(int i=1;i<=boolCount;i++)
+                // {
+                //     result[i].v=FALSE;
+                //     result[i].flag=FALSE;
+                // }
+                else if(DPLL(cL)==OK)
                 {
-                    result[i].v=FALSE;
-                    result[i].flag=FALSE;
+                    printf(" SAT\n");
+                    for(int i=0;i<=boolCount;i++)
+                    {
+                        if(result[i].v==true)
+                            printf(" %-4d: TRUE\n",i);
+                        else 
+                            printf(" %-4d: FALSE\n",i);
+                    }
                 }
+                else printf(" UNSAT\n");
+                break;
+            }
+            case 4:
+            {
                 break;
             }
             default:
@@ -60,7 +76,6 @@ void DisPlay()
         }
     }
 }
-
 
 /*
  @ 函数名称: PrintMenu

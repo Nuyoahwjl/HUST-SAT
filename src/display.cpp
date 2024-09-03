@@ -3,15 +3,15 @@
 #include "SAT.h"
 
 /*
- @ 函数名称: disPlay
+ @ 函数名称: DisPlay
  @ 接受参数: void
  @ 函数功能: 交互界面
  @ 返回值: void
  */
-void disPlay()
+void DisPlay()
 {
     // clauseList cL=NULL;
-    printMenu();
+    PrintMenu();
     int op=1;
     while(op)
     {
@@ -21,12 +21,12 @@ void disPlay()
         printf("               Your choice: ");
         scanf("%d", &op);
         system("cls");
-        printMenu();
+        PrintMenu();
         switch (op)
         {
             case 1:
             { 
-                readFile(cL);
+                ReadFile(cL);
                 break;
             }
             case 2:
@@ -34,7 +34,7 @@ void disPlay()
                 if(cL==NULL)
                     printf(" You haven't open the CNF file.\n");
                 else
-                    printCnf(cL);
+                    PrintCnf(cL);
                 break;
             }
             case 3:
@@ -67,7 +67,7 @@ void disPlay()
  @ 函数功能: 打印菜单
  @ 返回值: void
  */
-void printMenu()
+void PrintMenu()
 {
     printf("|================Menu for SAT================|\n");
     printf("|--------------------------------------------|\n");

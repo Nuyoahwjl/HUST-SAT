@@ -43,14 +43,19 @@ clauseList cL=NULL; //CNF链表
 int boolCount; //布尔变元个数
 int clauseCount; //子句个数
 char fileName[100]; //文件名
-boolNode *result; //记录变元值的数组
+boolNode *result=NULL; //记录变元值的数组
 
 /*函数声明*/
-void disPlay(); //交互界面
-void printMenu(); //打印菜单
-status readFile(clauseList &cL); //读取文件并解析cnf
-status destroyCnf(clauseList &cL); //销毁当前解析的cnf
-status printCnf(clauseList cL); //打印cnf
-status isUnitClause(literalList l); //判断是否为单子句
-int findUnitClause(clauseList cL); //找到单子句 
+void DisPlay(); //交互界面
+void PrintMenu(); //打印菜单
+status ReadFile(clauseList &cL); //读取文件并解析cnf
+status DestroyCnf(clauseList &cL); //销毁当前解析的cnf
+status PrintCnf(clauseList cL); //打印cnf
+status IsUnitClause(literalList l); //判断是否为单子句
+int FindUnitClause(clauseList cL); //找到单子句 
+void Simplify(clauseList &cL, int literal); //根据选择的文字化简
+int ChooseLiteral(); //(没有单子句时的策略)选择文字
+clauseList CopyCnf(clauseList cL);
+
+
 status DPLL(clauseList cL); //DPLL算法

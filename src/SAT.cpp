@@ -8,6 +8,6 @@
 
 int main()
 {
-    disPlay();
+    DisPlay();
     return 0;
 }

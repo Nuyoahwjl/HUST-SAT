@@ -8,7 +8,7 @@
  @ 函数功能: 用文件指针fp打开用户指定的文件，并读取文件内容保存到给定参数中
  @ 返回值: int
  */
-status readFile(clauseList &cL)
+status ReadFile(clauseList &cL)
 {
     if(cL!=NULL)
     {
@@ -19,7 +19,7 @@ status readFile(clauseList &cL)
         if(choice==0)
             return OK;
         else
-            destroyCnf(cL);
+            DestroyCnf(cL);
     }
     printf(" Please input the file name: ");
     scanf("%s", fileName);
@@ -111,7 +111,7 @@ status readFile(clauseList &cL)
  @ 函数功能: 销毁给定的CNF文件
  @ 返回值: int
  */
-status destroyCnf(clauseList &cL)
+status DestroyCnf(clauseList &cL)
 {
     clauseList p=cL->next;
     while(p)
@@ -140,7 +140,7 @@ status destroyCnf(clauseList &cL)
  @ 函数功能: 打印给定的CNF文件
  @ 返回值: int
  */
-status printCnf(clauseList cL)
+status PrintCnf(clauseList cL)
 {
     clauseList p = cL->next;
     if(p==NULL)

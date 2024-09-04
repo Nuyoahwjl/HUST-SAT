@@ -21,7 +21,7 @@ status ReadFile(clauseList &cL)
         else
         {
             // free(result);
-            result=NULL;
+            // result=NULL;
             DestroyCnf(cL);
         }
     }
@@ -70,40 +70,6 @@ status ReadFile(clauseList &cL)
             lastClause->next = newClause;
         lastClause = newClause;
     }
-    
-
-    // //Initialize the clause list with a head node
-    // cL = (clauseList)malloc(sizeof(clauseNode));
-    // cL->head = NULL; //Head node, no literal
-    // cL->next = NULL;
-    
-    // clauseList lastClause = cL; //Start from the head node
-    
-    // for (int i = 0; i < clauseCount; i++) {
-    //     //Create a new clause node with a head node for literals
-    //     clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
-    //     newClause->head = (literalList)malloc(sizeof(literalNode));
-    //     newClause->head->next = NULL;
-    //     newClause->next = NULL;
-
-    //     literalList lastLiteral = newClause->head; //Start from the literal head node
-    //     int number;
-    //     fscanf(fp, "%d", &number);
-
-    //     while (number != 0) {
-    //         literalList newLiteral = (literalList)malloc(sizeof(literalNode));
-    //         newLiteral->literal = number;
-    //         newLiteral->next = NULL;
-
-    //         lastLiteral->next = newLiteral;
-    //         lastLiteral = newLiteral;
-
-    //         fscanf(fp, "%d", &number);
-    //     }
-
-    //     lastClause->next = newClause;
-    //     lastClause = newClause;
-    // }
     printf(" Read successfully.\n");
     fclose(fp);
     return OK;
@@ -117,24 +83,6 @@ status ReadFile(clauseList &cL)
  */
 status DestroyCnf(clauseList &cL)
 {
-    // clauseList p=cL->next;
-    // while(p)
-    // {
-    //     literalList q=p->head->next;
-    //     while(q)
-    //     {
-    //         literalList temp=q;
-    //         q=q->next;
-    //         free(temp);
-    //     }
-    //     free(p->head);
-    //     clauseList temp=p;
-    //     p=p->next;
-    //     free(temp);
-    // }
-    // free(cL);
-    // cL=NULL;
-    // return OK;
     while (cL != NULL)
     {
         clauseList tempClause = cL;

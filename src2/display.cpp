@@ -10,6 +10,7 @@
  */
 void DisPlay()
 {
+    // int *value=NULL;
     clauseList cL=NULL;
     PrintMenu();
     int op=1;
@@ -44,18 +45,24 @@ void DisPlay()
                     printf(" You haven't open the CNF file.\n");
                     break;
                 }
-                else if(DPLL(cL)==OK)
+                else
                 {
-                    printf(" SAT\n");
-                    for(int i=1;i<=boolCount;i++)
+                    value = (int *)malloc(sizeof(int) * (boolCount + 1));
+                    for (int i = 1; i <= boolCount; i++)
+                        value[i] = 1; // 初始化，均赋为1
+                    int result = DPLL(cL);
+                    if (result == OK)
                     {
-                        if(result[i].v==true)
-                            printf(" %-4d: TRUE\n",i);
-                        else 
-                            printf(" %-4d: FALSE\n",i);
+                        for (int i = 1; i <= boolCount; i++)
+                        {
+                            if (value[i] == 1)
+                                printf(" %-4d: TRUE\n",i);
+                            else
+                                printf(" %-4d: FALSE\n",i);
+                        }
                     }
+                    else printf(" UNSAT\n");
                 }
-                else printf(" UNSAT\n");
                 break;
             }
             case 4:

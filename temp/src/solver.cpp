@@ -249,24 +249,12 @@ status DPLL(clauseList cL)
             result[i].flag = false;
         }
     }
-    // clauseList p = cL;
-    //     if (p == NULL)
-    //         return OK; // 所有子句都被满足了
-    //     while (p)
-    //     {
-    //         if (p->head == NULL) // 空子句，返回UNSAT
-    //             return ERROR;
-    //         p = p->next;
-    //     }
-    // 1. 单子句规则
     int unitLiteral = FindUnitClause(cL);
     while (unitLiteral != 0)
     {
         result[abs(unitLiteral)].v = (unitLiteral > 0) ? TRUE : FALSE;
         result[abs(unitLiteral)].flag = TRUE;
         Simplify(cL, unitLiteral);
-        printf("-------------------\n");
-        PrintCnf(cL);
         // 终止条件
         clauseList p = cL;
         if (p == NULL)

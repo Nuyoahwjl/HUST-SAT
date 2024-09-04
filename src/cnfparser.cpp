@@ -19,7 +19,11 @@ status ReadFile(clauseList &cL)
         if(choice==0)
             return OK;
         else
+        {
+            free(result);
+            result=NULL;
             DestroyCnf(cL);
+        }
     }
     printf(" Please input the file name: ");
     scanf("%s", fileName);
@@ -38,68 +42,68 @@ status ReadFile(clauseList &cL)
     }
     getc(fp); getc(fp); getc(fp); getc(fp); //读取cnf
     fscanf(fp,"%d%d",&boolCount,&clauseCount);
-    {
-    // cL = NULL;
-    // clauseList lastClause = NULL; 
-    // for (int i = 0; i < clauseCount; i++) {
-    //     clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
-    //     newClause->literals = NULL;
-    //     newClause->next = NULL;
-    //     literalList lastLiteral = NULL;
-    //     int number;
-    //     fscanf(fp, "%d", &number);
-    //     while (number != 0) 
-    //     {
-    //         literalList newLiteral = (literalList)malloc(sizeof(literalNode));
-    //         newLiteral->literal = number;
-    //         newLiteral->next = NULL;
-    //         if (newClause->literals == NULL) 
-    //             newClause->literals = newLiteral;
-    //         else 
-    //             lastLiteral->next = newLiteral;
-    //         lastLiteral = newLiteral;
-    //         fscanf(fp, "%d", &number);
-    //     }
-    //     if (cL == NULL)
-    //         cL = newClause;
-    //     else 
-    //         lastClause->next = newClause;
-    //     lastClause = newClause;
-    // }
-    }
-
-    //Initialize the clause list with a head node
-    cL = (clauseList)malloc(sizeof(clauseNode));
-    cL->head = NULL; //Head node, no literal
-    cL->next = NULL;
     
-    clauseList lastClause = cL; //Start from the head node
-    
+    cL = NULL;
+    clauseList lastClause = NULL; 
     for (int i = 0; i < clauseCount; i++) {
-        //Create a new clause node with a head node for literals
         clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
-        newClause->head = (literalList)malloc(sizeof(literalNode));
-        newClause->head->next = NULL;
+        newClause->head = NULL;
         newClause->next = NULL;
-
-        literalList lastLiteral = newClause->head; //Start from the literal head node
+        literalList lastLiteral = NULL;
         int number;
         fscanf(fp, "%d", &number);
-
-        while (number != 0) {
+        while (number != 0) 
+        {
             literalList newLiteral = (literalList)malloc(sizeof(literalNode));
             newLiteral->literal = number;
             newLiteral->next = NULL;
-
-            lastLiteral->next = newLiteral;
+            if (newClause->head == NULL) 
+                newClause->head = newLiteral;
+            else 
+                lastLiteral->next = newLiteral;
             lastLiteral = newLiteral;
-
             fscanf(fp, "%d", &number);
         }
-
-        lastClause->next = newClause;
+        if (cL == NULL)
+            cL = newClause;
+        else 
+            lastClause->next = newClause;
         lastClause = newClause;
     }
+    
+
+    // //Initialize the clause list with a head node
+    // cL = (clauseList)malloc(sizeof(clauseNode));
+    // cL->head = NULL; //Head node, no literal
+    // cL->next = NULL;
+    
+    // clauseList lastClause = cL; //Start from the head node
+    
+    // for (int i = 0; i < clauseCount; i++) {
+    //     //Create a new clause node with a head node for literals
+    //     clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
+    //     newClause->head = (literalList)malloc(sizeof(literalNode));
+    //     newClause->head->next = NULL;
+    //     newClause->next = NULL;
+
+    //     literalList lastLiteral = newClause->head; //Start from the literal head node
+    //     int number;
+    //     fscanf(fp, "%d", &number);
+
+    //     while (number != 0) {
+    //         literalList newLiteral = (literalList)malloc(sizeof(literalNode));
+    //         newLiteral->literal = number;
+    //         newLiteral->next = NULL;
+
+    //         lastLiteral->next = newLiteral;
+    //         lastLiteral = newLiteral;
+
+    //         fscanf(fp, "%d", &number);
+    //     }
+
+    //     lastClause->next = newClause;
+    //     lastClause = newClause;
+    // }
     printf(" Read successfully.\n");
     fclose(fp);
     return OK;
@@ -113,24 +117,41 @@ status ReadFile(clauseList &cL)
  */
 status DestroyCnf(clauseList &cL)
 {
-    clauseList p=cL->next;
-    while(p)
+    // clauseList p=cL->next;
+    // while(p)
+    // {
+    //     literalList q=p->head->next;
+    //     while(q)
+    //     {
+    //         literalList temp=q;
+    //         q=q->next;
+    //         free(temp);
+    //     }
+    //     free(p->head);
+    //     clauseList temp=p;
+    //     p=p->next;
+    //     free(temp);
+    // }
+    // free(cL);
+    // cL=NULL;
+    // return OK;
+    while (cL != NULL)
     {
-        literalList q=p->head->next;
-        while(q)
+        clauseList tempClause = cL;
+        cL = cL->next;
+
+        literalList p = tempClause->head;
+        while (p != NULL)
         {
-            literalList temp=q;
-            q=q->next;
-            free(temp);
+            literalList tempLiteral = p;
+            p = p->next;
+            free(tempLiteral);
         }
-        free(p->head);
-        clauseList temp=p;
-        p=p->next;
-        free(temp);
+        
+        free(tempClause);
     }
 
-    free(cL);
-    cL=NULL;
+    cL = NULL;
     return OK;
 }
 
@@ -142,7 +163,7 @@ status DestroyCnf(clauseList &cL)
  */
 status PrintCnf(clauseList cL)
 {
-    clauseList p = cL->next;
+    clauseList p = cL;
     if(p==NULL)
     {
         printf(" No clauses.\n");
@@ -153,15 +174,16 @@ status PrintCnf(clauseList cL)
     printf("  clauseCount:%d\n",clauseCount);
     while(p)
     {
-        literalList q = p->head->next;
+        literalList q = p->head;
         printf("  ");
         while(q)
         {
             printf("%-5d", q->literal);
             q = q->next;
         }
-        printf(" 0\n");
+        printf("0\n");
         p = p->next;
     }
     return OK;
 }
+

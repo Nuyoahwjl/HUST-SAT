@@ -24,6 +24,7 @@ typedef struct literalNode
 typedef struct clauseNode
 {
     literalList head; //指向子句中的第一个文字
+    // int literalCount; //子句中文字个数
     struct clauseNode *next; //指向下一个子句
 }clauseNode, *clauseList;
 
@@ -49,9 +50,9 @@ status PrintCnf(clauseList cL); //打印cnf
 status IsUnitClause(literalList l); //判断是否为单子句
 int FindUnitClause(clauseList cL); //找到单子句 
 void Simplify(clauseList &cL, int literal); //根据选择的文字化简
+status DestroyClause(clauseList &cL); //销毁子句
 int ChooseLiteral(); //(没有单子句时的策略)选择文字
-clauseList CopyCnf(clauseList cL);
-
+clauseList CopyCnf(clauseList cL); //复制cnf
 status DPLL(clauseList cL); //DPLL算法
 
 int main()
@@ -104,16 +105,10 @@ void DisPlay()
                     printf(" You haven't open the CNF file.\n");
                     break;
                 }
-                // result=(boolNode*)malloc(sizeof(boolNode)*(boolCount+1));
-                // for(int i=1;i<=boolCount;i++)
-                // {
-                //     result[i].v=FALSE;
-                //     result[i].flag=FALSE;
-                // }
                 else if(DPLL(cL)==OK)
                 {
                     printf(" SAT\n");
-                    for(int i=0;i<=boolCount;i++)
+                    for(int i=1;i<=boolCount;i++)
                     {
                         if(result[i].v==true)
                             printf(" %-4d: TRUE\n",i);
@@ -122,6 +117,10 @@ void DisPlay()
                     }
                 }
                 else printf(" UNSAT\n");
+                break;
+            }
+            case 4:
+            {
                 break;
             }
             default:
@@ -169,7 +168,11 @@ status ReadFile(clauseList &cL)
         if(choice==0)
             return OK;
         else
+        {
+            free(result);
+            result=NULL;
             DestroyCnf(cL);
+        }
     }
     printf(" Please input the file name: ");
     scanf("%s", fileName);
@@ -188,68 +191,68 @@ status ReadFile(clauseList &cL)
     }
     getc(fp); getc(fp); getc(fp); getc(fp); //读取cnf
     fscanf(fp,"%d%d",&boolCount,&clauseCount);
-    {
-    // cL = NULL;
-    // clauseList lastClause = NULL; 
-    // for (int i = 0; i < clauseCount; i++) {
-    //     clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
-    //     newClause->literals = NULL;
-    //     newClause->next = NULL;
-    //     literalList lastLiteral = NULL;
-    //     int number;
-    //     fscanf(fp, "%d", &number);
-    //     while (number != 0) 
-    //     {
-    //         literalList newLiteral = (literalList)malloc(sizeof(literalNode));
-    //         newLiteral->literal = number;
-    //         newLiteral->next = NULL;
-    //         if (newClause->literals == NULL) 
-    //             newClause->literals = newLiteral;
-    //         else 
-    //             lastLiteral->next = newLiteral;
-    //         lastLiteral = newLiteral;
-    //         fscanf(fp, "%d", &number);
-    //     }
-    //     if (cL == NULL)
-    //         cL = newClause;
-    //     else 
-    //         lastClause->next = newClause;
-    //     lastClause = newClause;
-    // }
-    }
-
-    //Initialize the clause list with a head node
-    cL = (clauseList)malloc(sizeof(clauseNode));
-    cL->head = NULL; //Head node, no literal
-    cL->next = NULL;
     
-    clauseList lastClause = cL; //Start from the head node
-    
+    cL = NULL;
+    clauseList lastClause = NULL; 
     for (int i = 0; i < clauseCount; i++) {
-        //Create a new clause node with a head node for literals
         clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
-        newClause->head = (literalList)malloc(sizeof(literalNode));
-        newClause->head->next = NULL;
+        newClause->head = NULL;
         newClause->next = NULL;
-
-        literalList lastLiteral = newClause->head; //Start from the literal head node
+        literalList lastLiteral = NULL;
         int number;
         fscanf(fp, "%d", &number);
-
-        while (number != 0) {
+        while (number != 0) 
+        {
             literalList newLiteral = (literalList)malloc(sizeof(literalNode));
             newLiteral->literal = number;
             newLiteral->next = NULL;
-
-            lastLiteral->next = newLiteral;
+            if (newClause->head == NULL) 
+                newClause->head = newLiteral;
+            else 
+                lastLiteral->next = newLiteral;
             lastLiteral = newLiteral;
-
             fscanf(fp, "%d", &number);
         }
-
-        lastClause->next = newClause;
+        if (cL == NULL)
+            cL = newClause;
+        else 
+            lastClause->next = newClause;
         lastClause = newClause;
     }
+    
+
+    // //Initialize the clause list with a head node
+    // cL = (clauseList)malloc(sizeof(clauseNode));
+    // cL->head = NULL; //Head node, no literal
+    // cL->next = NULL;
+    
+    // clauseList lastClause = cL; //Start from the head node
+    
+    // for (int i = 0; i < clauseCount; i++) {
+    //     //Create a new clause node with a head node for literals
+    //     clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
+    //     newClause->head = (literalList)malloc(sizeof(literalNode));
+    //     newClause->head->next = NULL;
+    //     newClause->next = NULL;
+
+    //     literalList lastLiteral = newClause->head; //Start from the literal head node
+    //     int number;
+    //     fscanf(fp, "%d", &number);
+
+    //     while (number != 0) {
+    //         literalList newLiteral = (literalList)malloc(sizeof(literalNode));
+    //         newLiteral->literal = number;
+    //         newLiteral->next = NULL;
+
+    //         lastLiteral->next = newLiteral;
+    //         lastLiteral = newLiteral;
+
+    //         fscanf(fp, "%d", &number);
+    //     }
+
+    //     lastClause->next = newClause;
+    //     lastClause = newClause;
+    // }
     printf(" Read successfully.\n");
     fclose(fp);
     return OK;
@@ -263,24 +266,41 @@ status ReadFile(clauseList &cL)
  */
 status DestroyCnf(clauseList &cL)
 {
-    clauseList p=cL->next;
-    while(p)
+    // clauseList p=cL->next;
+    // while(p)
+    // {
+    //     literalList q=p->head->next;
+    //     while(q)
+    //     {
+    //         literalList temp=q;
+    //         q=q->next;
+    //         free(temp);
+    //     }
+    //     free(p->head);
+    //     clauseList temp=p;
+    //     p=p->next;
+    //     free(temp);
+    // }
+    // free(cL);
+    // cL=NULL;
+    // return OK;
+    while (cL != NULL)
     {
-        literalList q=p->head->next;
-        while(q)
+        clauseList tempClause = cL;
+        cL = cL->next;
+
+        literalList p = tempClause->head;
+        while (p != NULL)
         {
-            literalList temp=q;
-            q=q->next;
-            free(temp);
+            literalList tempLiteral = p;
+            p = p->next;
+            free(tempLiteral);
         }
-        free(p->head);
-        clauseList temp=p;
-        p=p->next;
-        free(temp);
+        
+        free(tempClause);
     }
 
-    free(cL);
-    cL=NULL;
+    cL = NULL;
     return OK;
 }
 
@@ -292,7 +312,7 @@ status DestroyCnf(clauseList &cL)
  */
 status PrintCnf(clauseList cL)
 {
-    clauseList p = cL->next;
+    clauseList p = cL;
     if(p==NULL)
     {
         printf(" No clauses.\n");
@@ -303,7 +323,7 @@ status PrintCnf(clauseList cL)
     printf("  clauseCount:%d\n",clauseCount);
     while(p)
     {
-        literalList q = p->head->next;
+        literalList q = p->head;
         printf("  ");
         while(q)
         {
@@ -326,7 +346,7 @@ status PrintCnf(clauseList cL)
  */
 status IsUnitClause(literalList l)
 {
-    if(l->next!=NULL && l->next->next==NULL)
+    if(l!=NULL && l->next==NULL)
         return TRUE;
     else
         return FALSE;
@@ -340,14 +360,34 @@ status IsUnitClause(literalList l)
  */
 int FindUnitClause(clauseList cL)
 {
-    clauseList p=cL->next;
+    clauseList p=cL;
     while(p)
     {
         if(IsUnitClause(p->head))
-            return p->head->next->literal;
+            return p->head->literal;
         p=p->next;
     }
     return 0;
+}
+
+/*
+ @ 函数名称: DestroyClause
+ @ 接受参数: clauseList &
+ @ 函数功能: 销毁子句
+ @ 返回值: void
+ */
+status DestroyClause(clauseList &cL)
+{
+    literalList p=cL->head;
+    while(p)
+    {
+        literalList temp=p;
+        p=p->next;
+        free(temp);
+    }
+    free(cL);
+    cL=NULL;
+    return OK;
 }
 
 /*
@@ -358,25 +398,32 @@ int FindUnitClause(clauseList cL)
  */
 void Simplify(clauseList &cL, int literal)
 {
-    clauseList pre=cL,p=cL->next;
+    clauseList pre=NULL,p=cL;
     while(p!=NULL)
     {
-        int flag=1;
-        literalList lpre=p->head,q=p->head->next;
+        bool clauseDeleted = false;
+        literalList lpre=NULL,q=p->head;
         while(q!=NULL)
         {
             if(q->literal==literal) //删除该子句
             {
-                pre->next=p->next;
-                p=p->next;
-                flag=0;
+                if(pre==NULL)
+                    cL=p->next;
+                else
+                    pre->next=p->next;
+                DestroyClause(p);
+                p=(pre==NULL)?cL:pre->next;
+                clauseDeleted = true;
                 break;
             }
             else if(q->literal==-literal) //删除该文字
             {
-                lpre->next=q->next;
+                if(lpre==NULL)
+                    p->head=q->next;
+                else
+                    lpre->next=q->next;
                 free(q);
-                q=lpre->next;
+                q = (lpre == NULL) ? p->head : lpre->next;
             }
             else
             {
@@ -384,7 +431,7 @@ void Simplify(clauseList &cL, int literal)
                 q=q->next;
             }
         }
-        if(flag)
+        if(!clauseDeleted)
         {
             pre=p;
             p=p->next;
@@ -461,63 +508,69 @@ int ChooseLiteral()
  @ 函数功能: 复制cnf
  @ 返回值: clauseList
  */
-clauseList CopyCnf(clauseList cL) 
+clauseList CopyCnf(clauseList cL)
 {
-    clauseList newCnf = (clauseList)malloc(sizeof(clauseNode));
-    newCnf->next = NULL;
-    clauseList p = cL->next, q = newCnf;
-    while (p) 
+    if (cL == NULL) return NULL;
+
+    clauseList newCnf = NULL;
+    clauseList *pLastClause = &newCnf;
+
+    while (cL != NULL) 
     {
-        clauseList temp = (clauseList)malloc(sizeof(clauseNode));
-        temp->head = (literalList)malloc(sizeof(literalNode));
-        temp->head->next = NULL;
-        literalList l = p->head->next, m = temp->head;
-        while (l) 
+        clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
+        newClause->head = NULL;
+        newClause->next = NULL;
+
+        literalList l = cL->head, *pLastLiteral = &newClause->head;
+        while (l != NULL) 
         {
-            literalList temp1 = (literalList)malloc(sizeof(literalNode));
-            temp1->literal = l->literal;
-            temp1->next = NULL;
-            m->next = temp1;
-            m = m->next;
+            literalList newLiteral = (literalList)malloc(sizeof(literalNode));
+            newLiteral->literal = l->literal;
+            newLiteral->next = NULL;
+
+            *pLastLiteral = newLiteral;
+            pLastLiteral = &newLiteral->next;
+
             l = l->next;
         }
-        m->next = NULL;
-        temp->next = NULL;
-        q->next = temp;
-        q = q->next;
-        p = p->next;
+
+        *pLastClause = newClause;
+        pLastClause = &newClause->next;
+
+        cL = cL->next;
     }
+    
     return newCnf;
 }
-// clauseList CopyCnf(clauseList cL)
+// clauseList CopyCnf(clauseList cL) 
 // {
-// clauseList newCnf = (clauseList)malloc(sizeof(clauseNode));
-//     newCnf->head = NULL;
+//     clauseList newCnf = (clauseList)malloc(sizeof(clauseNode));
 //     newCnf->next = NULL;
-//     clauseList last = newCnf, p = cL->next;
-//     while (p != NULL) 
+//     clauseList p = cL->next, q = newCnf;
+//     while (p) 
 //     {
-//         clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
-//         newClause->head = (literalList)malloc(sizeof(literalNode));
-//         newClause->next = NULL;
-//         newClause->head->next = NULL;
-//         literalList lastLiteral = newClause->head;
-//         literalList q = p->head->next;
-//         while (q != NULL) 
+//         clauseList temp = (clauseList)malloc(sizeof(clauseNode));
+//         temp->head = (literalList)malloc(sizeof(literalNode));
+//         temp->head->next = NULL;
+//         literalList l = p->head->next, m = temp->head;
+//         while (l) 
 //         {
-//             literalList newLiteral = (literalList)malloc(sizeof(literalNode));
-//             newLiteral->literal = q->literal;
-//             newLiteral->next = NULL;
-//             lastLiteral->next = newLiteral;
-//             lastLiteral = newLiteral;
-//             q = q->next;
+//             literalList temp1 = (literalList)malloc(sizeof(literalNode));
+//             temp1->literal = l->literal;
+//             temp1->next = NULL;
+//             m->next = temp1;
+//             m = m->next;
+//             l = l->next;
 //         }
-//         last->next = newClause;
-//         last = newClause;
+//         m->next = NULL;
+//         temp->next = NULL;
+//         q->next = temp;
+//         q = q->next;
 //         p = p->next;
 //     }
 //     return newCnf;
 // }
+
 
 /*
  @ 函数名称: DPLL
@@ -547,12 +600,12 @@ status DPLL(clauseList cL)
         Simplify(cL, unitLiteral);
         // return DPLL(cL);
         // 终止条件
-        clauseList p = cL->next;
+        clauseList p = cL;
         if (p == NULL)
             return OK; // 所有子句都被满足了
         while (p)
         {
-            if (p->head->next == NULL) // 空子句，返回UNSAT
+            if (p->head == NULL) // 空子句，返回UNSAT
                 return ERROR;
             p = p->next;
         }
@@ -561,109 +614,25 @@ status DPLL(clauseList cL)
 
     // 2. 选择一个未赋值的文字
     int literal = ChooseLiteral();
-    // if (literal == 0) return OK; // 没有可以选择的文字
+    if (literal == 0) return OK; // 没有可以选择的文字
 
     // 3. 递归求解
+    clauseList newCnf = CopyCnf(cL);
+    Simplify(newCnf, literal);
     result[literal].v = TRUE;
     result[literal].flag = TRUE;
-    clauseList newCnf = CopyCnf(cL);
-    clauseList tp=(clauseList)malloc(sizeof(clauseNode));
-    tp->head=(literalList)malloc(sizeof(literalNode));
-    tp->head->next=(literalList)malloc(sizeof(literalNode));
-    tp->head->next->literal=literal;
-    tp->head->next->next=NULL;
-    tp->next=newCnf->next;
-    newCnf->next=tp;
     if (DPLL(newCnf) == OK)
     {
+        DestroyCnf(newCnf);
         return OK;
     }
 
-    result[literal].v = FALSE;
     DestroyCnf(newCnf);
     newCnf = CopyCnf(cL);
-    clauseList tn=(clauseList)malloc(sizeof(clauseNode));
-    tn->head=(literalList)malloc(sizeof(literalNode));
-    tn->head->next=(literalList)malloc(sizeof(literalNode));
-    tn->head->next->literal=-literal;
-    tn->head->next->next=NULL;
-    tn->next=newCnf->next;
-    newCnf->next=tn;
-    return DPLL(newCnf);
+    Simplify(newCnf, -literal);
+    result[literal].v = FALSE;
+    status res = DPLL(newCnf);
+    DestroyCnf(newCnf); // 释放内存
+    return res;
 }
 
-    // // 初始化结果数组
-    // if (result == NULL) 
-    // {
-    //     result = (boolNode*)malloc(sizeof(boolNode) * (boolCount + 1));
-    //     for (int i = 1; i <= boolCount; i++) 
-    //     {
-    //         result[i].v = false;
-    //         result[i].flag = false;
-    //     }
-    // }
-
-    // // 检查是否已经确定所有子句
-    // clauseList p = cL->next;
-    // while (p != NULL) 
-    // {
-    //     literalList q = p->head->next;
-    //     bool hasUnassignedLiteral = false;
-    //     while (q != NULL) 
-    //     {
-    //         if (!result[abs(q->literal)].flag) 
-    //         {
-    //             hasUnassignedLiteral = true;
-    //             break;
-    //         }
-    //         q = q->next;
-    //     }
-    //     if (!hasUnassignedLiteral) 
-    //     {
-    //         if (p->head->next == NULL) // 空子句
-    //         {
-    //             // printf(" UNSAT\n");
-    //             return ERROR;
-    //         }
-    //     }
-    //     p = p->next;
-    // }
-
-    // // 找到单子句并进行推理
-    // int unitLiteral = FindUnitClause(cL);
-    // if (unitLiteral != 0) 
-    // {
-    //     result[abs(unitLiteral)].v = unitLiteral > 0 ? TRUE : FALSE;
-    //     result[abs(unitLiteral)].flag = TRUE;
-    //     // 对CNF进行简化
-    //     Simplify(cL, unitLiteral);
-    //     return DPLL(cL);
-    // }   
-
-    // // 选择一个未赋值的文字
-    // int chosenLiteral = ChooseLiteral();
-    // if (chosenLiteral == 0) 
-    //     return OK;
-    
-
-    // // 尝试将选择的文字设为真
-    // result[abs(chosenLiteral)].v = chosenLiteral > 0 ? TRUE : FALSE;
-    // result[abs(chosenLiteral)].flag = TRUE;
-    // clauseList newCnf = CopyCnf(cL);
-    // Simplify(newCnf, chosenLiteral);
-    // if (DPLL(newCnf) == OK)
-    //     return OK;
-
-    // // 尝试将选择的文字设为假
-    // result[abs(chosenLiteral)].v = !(chosenLiteral > 0) ? TRUE : FALSE;
-    // result[abs(chosenLiteral)].flag = TRUE;
-    // DestroyCnf(newCnf);
-    // newCnf = CopyCnf(cL);
-    // Simplify(newCnf, -chosenLiteral);
-    // if (DPLL(newCnf) == OK) 
-    //     return OK;
-    
-    // // 无解
-    // // printf(" UNSAT\n");
-    // result[abs(chosenLiteral)].flag = FALSE;
-    // return ERROR;

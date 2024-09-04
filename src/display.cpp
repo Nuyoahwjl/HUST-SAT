@@ -44,16 +44,10 @@ void DisPlay()
                     printf(" You haven't open the CNF file.\n");
                     break;
                 }
-                // result=(boolNode*)malloc(sizeof(boolNode)*(boolCount+1));
-                // for(int i=1;i<=boolCount;i++)
-                // {
-                //     result[i].v=FALSE;
-                //     result[i].flag=FALSE;
-                // }
                 else if(DPLL(cL)==OK)
                 {
                     printf(" SAT\n");
-                    for(int i=0;i<=boolCount;i++)
+                    for(int i=1;i<=boolCount;i++)
                     {
                         if(result[i].v==true)
                             printf(" %-4d: TRUE\n",i);

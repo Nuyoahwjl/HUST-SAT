@@ -19,7 +19,7 @@ void DisPlay()
         printf("\n|--------------------------------------------|\n");
         printf(  "|--------Please Choose Your Operation--------|\n");
         printf(  "|--------------------------------------------|\n\n");
-        printf("               Your choice: ");
+        printf("              Your choice: ");
         scanf("%d", &op);
         system("cls");
         PrintMenu();
@@ -48,20 +48,45 @@ void DisPlay()
                 else
                 {
                     value = (int *)malloc(sizeof(int) * (boolCount + 1));
+                    // value =(Result *)malloc(sizeof(Result) * (boolCount + 1));
                     for (int i = 1; i <= boolCount; i++)
-                        value[i] = 1; // 初始化，均赋为1
+                        {
+                            value[i]= TRUE; //初始化，均赋为1
+                            value[i]= FALSE; //初始化，均未赋值
+                        }
+                    LARGE_INTEGER frequency; //计时器频率
+                    LARGE_INTEGER start, end; //设置时间变量
+                    double time;
+                    QueryPerformanceFrequency(&frequency);
+                    QueryPerformanceCounter(&start); //计时开始;
                     int result = DPLL(cL);
+                    QueryPerformanceCounter(&end); //结束
+                    time = (double)(end.QuadPart-start.QuadPart)/frequency.QuadPart; //计算运行时间
                     if (result == OK)
                     {
+                        printf(" SAT\n\n");
                         for (int i = 1; i <= boolCount; i++)
                         {
-                            if (value[i] == 1)
+                            if (value[i]== TRUE)
                                 printf(" %-4d: TRUE\n",i);
                             else
                                 printf(" %-4d: FALSE\n",i);
                         }
                     }
-                    else printf(" UNSAT\n");
+                    else 
+                        printf(" UNSAT\n");
+                    printf("\n Time: %lf ms\n", time*1000);
+                    printf("\n Save the result to file? (1/0): ");
+                    int choice;
+                    scanf("%d", &choice);
+                    printf("\n");
+                    if (choice == 1)
+                    {
+                        if(SaveResult(result, time, value))
+                            printf(" Save successfully.\n");
+                        else
+                            printf(" Save failed.\n");
+                    }
                 }
                 break;
             }

@@ -10,6 +10,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <windows.h>
+#include <winnt.h>
 
 /*常量*/
 #define OK 1
@@ -50,11 +52,21 @@ status DPLL(clauseList &cL); //DPLL算法
 status IsUnitClause(literalList l);
 int FindUnitClause(clauseList cL);
 status DestroyClause(clauseList &cL);
+int ChooseLiteral(clauseList cL);
 void Simplify(clauseList &cL, int literal);
 clauseList CopyCnf(clauseList cL);
+status SaveResult(int result, double time, int value[]);
+
 // int isUnitClause(literalList cL);
 // int emptyClause(clauseList cL);
 // void CopyClause(clauseList &a, clauseList b);
 // int removeClause(clauseList& p, clauseList& cL);
 // int removeNode(literalList& q, literalList& head);
 // int addClause(clauseList cnf, clauseList& root);
+
+// typedef struct Result
+// {
+//     int v; //布尔变元值
+//     int flag; //是否赋值
+// }Result;
+// Result *value=NULL;

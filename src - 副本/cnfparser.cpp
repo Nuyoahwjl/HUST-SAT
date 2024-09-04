@@ -20,8 +20,8 @@ status ReadFile(clauseList &cL)
             return OK;
         else
         {
-            // free(result);
-            result=NULL;
+            free(value);
+            value=NULL;
             DestroyCnf(cL);
         }
     }

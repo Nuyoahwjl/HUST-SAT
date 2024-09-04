@@ -10,7 +10,7 @@
  */
 void DisPlay()
 {
-    clauseList cL=NULL;
+    // clauseList cL=NULL;
     PrintMenu();
     int op=1;
     while(op)
@@ -49,7 +49,7 @@ void DisPlay()
                     printf(" SAT\n");
                     for(int i=1;i<=boolCount;i++)
                     {
-                        if(result[i].v==true)
+                        if(value[i]==true)
                             printf(" %-4d: TRUE\n",i);
                         else 
                             printf(" %-4d: FALSE\n",i);

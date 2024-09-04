@@ -33,18 +33,18 @@ typedef struct clauseNode
 }clauseNode, *clauseList;
 
 /*布尔变元的值*/
-typedef struct boolNode
-{
-    bool v; //真或假
-    bool flag; //是否被赋值
-}boolNode;
+// typedef struct boolNode
+// {
+//     bool v; //真或假
+//     // bool flag; //是否被赋值
+// }boolNode;
 
-// clauseList cL=NULL; //CNF链表
+clauseList cL=NULL; //CNF链表
 int boolCount; //布尔变元个数
 int clauseCount; //子句个数
 char fileName[100]; //文件名
-boolNode *result=NULL; //记录变元值的数组
-// int *value=NULL;
+// boolNode *result=NULL; //记录变元值的数组
+int *value=NULL;
 
 /*函数声明*/
 void DisPlay(); //交互界面

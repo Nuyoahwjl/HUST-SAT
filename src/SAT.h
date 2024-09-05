@@ -40,7 +40,7 @@ typedef struct clauseNode
 int boolCount; //布尔变元个数
 int clauseCount; //子句个数
 char fileName[100]; //文件名
-int *value=NULL; //记录布尔变元值(真/假)的数组
+// int *value=NULL; //记录布尔变元值(真/假)的数组
 
 /*函数声明*/
 void DisPlay(); //交互界面
@@ -48,7 +48,7 @@ void PrintMenu(); //打印菜单
 status ReadFile(clauseList &cL); //读取文件并解析cnf
 status DestroyCnf(clauseList &cL); //销毁当前解析的cnf
 status PrintCnf(clauseList cL); //打印cnf
-status DPLL(clauseList &cL); //DPLL算法
+status DPLL(clauseList &cL,int value[]); //DPLL算法
 status IsUnitClause(literalList l);
 int FindUnitClause(clauseList cL);
 status DestroyClause(clauseList &cL);

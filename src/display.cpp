@@ -10,7 +10,7 @@
  */
 void DisPlay()
 {
-    // int *value=NULL;
+    int *value=NULL;
     clauseList cL=NULL;
     PrintMenu();
     int op=1;
@@ -59,7 +59,7 @@ void DisPlay()
                     double time;
                     QueryPerformanceFrequency(&frequency);
                     QueryPerformanceCounter(&start); //计时开始;
-                    int result = DPLL(cL);
+                    int result = DPLL(cL,value);
                     QueryPerformanceCounter(&end); //结束
                     time = (double)(end.QuadPart-start.QuadPart)/frequency.QuadPart; //计算运行时间
                     if (result == OK)
@@ -94,6 +94,11 @@ void DisPlay()
             {
                 break;
             }
+            case 0:
+            {
+                printf(" Exit successfully.\n");
+                break;
+            }
             default:
             {
                 printf(" Invalid input.\n");
@@ -101,6 +106,7 @@ void DisPlay()
             }        
         }
     }
+    return;
 }
 
 /*

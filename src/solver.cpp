@@ -202,7 +202,7 @@ int ChooseLiteral(clauseList cL)
  @ 函数功能: DPLL算法求解SAT问题
  @ 返回值: int
  */
-status DPLL(clauseList &cL)
+status DPLL(clauseList &cL,int value[])
 {
 	/*1.单子句规则*/
 	int unitLiteral = FindUnitClause(cL);
@@ -232,7 +232,7 @@ status DPLL(clauseList &cL)
 	p->head->next = NULL;
 	p->next = newCnf;
 	newCnf = p;
-	if (DPLL(newCnf) == 1)
+	if (DPLL(newCnf,value) == 1)
 		return 1; // 在第一分支中搜索
 	DestroyCnf(newCnf);
 	/*4.将该文字赋值为假，递归求解*/
@@ -243,7 +243,7 @@ status DPLL(clauseList &cL)
 	q->head->next = NULL;
 	q->next = newCnf;
 	newCnf = q;
-	status re = DPLL(newCnf); // 回溯到执行分支策略的初态进入另一分支
+	status re = DPLL(newCnf,value); // 回溯到执行分支策略的初态进入另一分支
 	// DestroyCnf(cL);
 	return re;
 }
@@ -277,14 +277,16 @@ status SaveResult(int result, double time, int value[])
 		printf(" Fail!\n");
 		return ERROR;
 	}
-	fprintf(fp, "s %d\nv ", result);  //求解结果
+	fprintf(fp, "s %d", result);  //求解结果
 	if (result == 1)
 	{
 		//保存解值
-		for (int i = 1; i <= boolCount; i++)
+		for (int i = 1,cnt=1; i <= boolCount; i++,cnt++)
 		{
+			if(cnt==1) fprintf(fp,"\nv ");
 			if (value[i] == TRUE) fprintf(fp, "%d ", i);
-			else fprintf(fp, "%d ", -i);
+				else fprintf(fp, "%d ", -i);
+			if(cnt==20) cnt=0;
 		}
 	}
 	fprintf(fp, "\nt %lfms", time * 1000);  //运行时间/毫秒

@@ -63,10 +63,10 @@ status SaveResult(int result, double time, int value[]);
 // int removeClause(clauseList& p, clauseList& cL);
 // int removeNode(literalList& q, literalList& head);
 // int addClause(clauseList cnf, clauseList& root);
-
 // typedef struct Result
 // {
 //     int v; //布尔变元值
 //     int flag; //是否赋值
 // }Result;
 // Result *value=NULL;
+

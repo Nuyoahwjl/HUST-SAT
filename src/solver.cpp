@@ -147,7 +147,7 @@ clauseList CopyCnf(clauseList cL)
 
 /*
  @ 函数名称: ChooseLiteral
- @ 接受参数: void
+ @ 接受参数: clauseList
  @ 函数功能: (没有单子句时的策略)选择文字(出现次数最多的文字)
  @ 返回值: int
  */
@@ -198,7 +198,7 @@ int ChooseLiteral(clauseList cL)
 
 /*
  @ 函数名称: DPLL
- @ 接受参数: clauseList
+ @ 接受参数: clauseList,int[]
  @ 函数功能: DPLL算法求解SAT问题
  @ 返回值: status
  */
@@ -250,11 +250,11 @@ status DPLL(clauseList &cL,int value[])
 
 /*
  @ 函数名称: SaveResult
- @ 接受参数: int, double, int[]
+ @ 接受参数: int,double,int[],char[]
  @ 函数功能: 保存求解结果
  @ 返回值: status
  */
-status SaveResult(int result, double time, int value[])
+status SaveResult(int result, double time, int value[],char fileName[])
 {
 	FILE* fp;
 	char name[100];

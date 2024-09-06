@@ -4,11 +4,11 @@
 
 /*
  @ 函数名称: ReadFile
- @ 接受参数: clauseList &
+ @ 接受参数: clauseList &,char[]
  @ 函数功能: 用文件指针fp打开用户指定的文件，并读取文件内容保存到给定参数中
  @ 返回值: status
  */
-status ReadFile(clauseList &cL)
+status ReadFile(clauseList &cL,char fileName[])
 {
     FILE *fp = fopen(fileName, "r");
     while(fp==NULL)
@@ -53,7 +53,6 @@ status ReadFile(clauseList &cL)
             lastClause->next = newClause;
         lastClause = newClause;
     }
-    printf(" Read successfully.\n");
     fclose(fp);
     return OK;
 }

@@ -11,6 +11,7 @@ void DisPlay()
 {
     int *value=NULL;
     clauseList cL=NULL;
+    char fileName[100];
     PrintMenu();
     int op=1;
     while(op)
@@ -18,32 +19,35 @@ void DisPlay()
         printf("\n|--------------------------------------------|\n");
         printf(  "|--------Please Choose Your Operation--------|\n");
         printf(  "|--------------------------------------------|\n\n");
-        printf(  "              Your choice: ");
+        printf(  "               Your choice: ");
         scanf("%d", &op);
         system("cls");
         PrintMenu();
         switch (op)
         {
-        case 1:
-        {
-            if (cL != NULL)
+            case 1:
             {
-                printf(" The CNF has been read.\n");
-                printf(" Do you want to read another? (1/0): ");
-                int choice;
-                scanf("%d", &choice);
-                if (choice == 0)
-                    break;
-                else
+                if (cL != NULL)
                 {
-                    DestroyCnf(cL);
+                    printf(" The CNF has been read.\n");
+                    printf(" Do you want to read another? (1/0): ");
+                    int choice;
+                    scanf("%d", &choice);
+                    if (choice == 0)
+                        break;
+                    else
+                    {
+                        DestroyCnf(cL);
+                    }
                 }
+                printf(" Please input the file name: ");
+                scanf("%s", fileName);
+                if(ReadFile(cL, fileName)==OK)
+                    printf(" Read successfully.\n");
+                else
+                    printf(" Read failed.\n");
+                break;
             }
-            printf(" Please input the file name: ");
-            scanf("%s", fileName);
-            ReadFile(cL);
-            break;
-        }
             case 2:
             {
                 if(cL==NULL)
@@ -65,7 +69,6 @@ void DisPlay()
                     for (int i = 1; i <= boolCount; i++)
                         {
                             value[i]= TRUE; //初始化，均赋为1
-                            value[i]= FALSE; //初始化，均未赋值
                         }
                     LARGE_INTEGER frequency; //计时器频率
                     LARGE_INTEGER start, end; //设置时间变量
@@ -95,7 +98,7 @@ void DisPlay()
                     printf("\n");
                     if (choice == 1)
                     {
-                        if(SaveResult(result, time, value))
+                        if(SaveResult(result, time, value,fileName))
                             printf(" Save successfully.\n");
                         else
                             printf(" Save failed.\n");

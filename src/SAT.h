@@ -1,5 +1,3 @@
-// g++ src/SAT.h src/display.cpp src/solver.cpp src/cnfparser.cpp src/X-Sudoku.cpp -o SAT
-
 # pragma once
 
 /*头文件*/
@@ -40,7 +38,7 @@ typedef struct clauseNode
 /*变量*/
 int boolCount; //布尔变元个数
 int clauseCount; //子句个数
-char fileName[100]; //文件名
+// char fileName[100]; //文件名
 // int *value=NULL; //记录布尔变元值(真/假)的数组
 // int board[SIZE+1][SIZE+1]; //数独棋盘
 // bool isFixed[SIZE+1][SIZE+1]; //记录是否为提示数字
@@ -48,7 +46,7 @@ char fileName[100]; //文件名
 /*函数声明*/
 void DisPlay(); //主交互界面
 void PrintMenu(); //打印菜单
-status ReadFile(clauseList &cL); //读取文件并解析cnf
+status ReadFile(clauseList &cL,char fileName[]); //读取文件并解析cnf
 status DestroyCnf(clauseList &cL); //销毁当前解析的cnf
 status PrintCnf(clauseList cL); //打印cnf
 status DPLL(clauseList &cL,int value[]); //DPLL算法
@@ -58,12 +56,15 @@ status DestroyClause(clauseList &cL); //销毁子句
 int ChooseLiteral(clauseList cL); //选择一个未赋值的文字
 void Simplify(clauseList &cL, int literal); //根据选择的文字化简
 clauseList CopyCnf(clauseList cL); //复制cnf
-status SaveResult(int result, double time, int value[]); //保存求解结果
+status SaveResult(int result, double time, int value[],char fileName[]); //保存求解结果
 void X_Sudoku(); //X数独
 void PrintMenu_X(); //打印X数独菜单
-status Generate_Sudoku(int board[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1],int num); //生成数独
+status Generate_Sudoku(int board[SIZE+1][SIZE+1],int newBoard[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1],int num); //生成数独
 status Is_Valid(int board[SIZE+1][SIZE+1],int row, int col, int v); //判断board[row][col]是否可以填入v
 void Print_Sudoku(int board[SIZE+1][SIZE+1]); //打印数独
 void Play_Sudoku(int board[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1]); //玩数独
 status WriteToFile(int board[SIZE+1][SIZE+1],int num); //将数独约束条件写入文件
+status Slove(int board[SIZE+1][SIZE+1],int value[SIZE*SIZE*SIZE+1]); //求解数独
 
+// bool Solve_Sudoku(int board[SIZE+1][SIZE+1], int row, int col);
+// void Remove_Numbers(int board[SIZE+1][SIZE+1], int count);

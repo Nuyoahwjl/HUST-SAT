@@ -6,7 +6,7 @@
  @ 函数名称: IsUnitClause
  @ 接受参数: literalList
  @ 函数功能: 判断是否为单子句
- @ 返回值: int
+ @ 返回值: status
  */
 status IsUnitClause(literalList l)
 {
@@ -38,7 +38,7 @@ int FindUnitClause(clauseList cL)
  @ 函数名称: DestroyClause
  @ 接受参数: clauseList &
  @ 函数功能: 销毁子句
- @ 返回值: int
+ @ 返回值: status
  */
 status DestroyClause(clauseList &cL)
 {
@@ -148,7 +148,7 @@ clauseList CopyCnf(clauseList cL)
 /*
  @ 函数名称: ChooseLiteral
  @ 接受参数: void
- @ 函数功能: (没有单子句时的策略)选择文字
+ @ 函数功能: (没有单子句时的策略)选择文字(出现次数最多的文字)
  @ 返回值: int
  */
 int ChooseLiteral(clauseList cL)
@@ -200,7 +200,7 @@ int ChooseLiteral(clauseList cL)
  @ 函数名称: DPLL
  @ 接受参数: clauseList
  @ 函数功能: DPLL算法求解SAT问题
- @ 返回值: int
+ @ 返回值: status
  */
 status DPLL(clauseList &cL,int value[])
 {
@@ -231,7 +231,7 @@ status DPLL(clauseList &cL,int value[])
 	p->head->literal = literal;
 	p->head->next = NULL;
 	p->next = newCnf;
-	newCnf = p;
+	newCnf = p; // 插入到表头
 	if (DPLL(newCnf,value) == 1)
 		return 1; // 在第一分支中搜索
 	DestroyCnf(newCnf);

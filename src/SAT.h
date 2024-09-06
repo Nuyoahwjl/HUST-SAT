@@ -18,6 +18,7 @@
 #define ERROR 0
 #define TRUE 1
 #define FALSE 0
+#define SIZE 9
 
 /*状态码*/
 typedef int status; 
@@ -41,32 +42,28 @@ int boolCount; //布尔变元个数
 int clauseCount; //子句个数
 char fileName[100]; //文件名
 // int *value=NULL; //记录布尔变元值(真/假)的数组
+// int board[SIZE+1][SIZE+1]; //数独棋盘
+// bool isFixed[SIZE+1][SIZE+1]; //记录是否为提示数字
 
 /*函数声明*/
-void DisPlay(); //交互界面
+void DisPlay(); //主交互界面
 void PrintMenu(); //打印菜单
 status ReadFile(clauseList &cL); //读取文件并解析cnf
 status DestroyCnf(clauseList &cL); //销毁当前解析的cnf
 status PrintCnf(clauseList cL); //打印cnf
 status DPLL(clauseList &cL,int value[]); //DPLL算法
-status IsUnitClause(literalList l);
-int FindUnitClause(clauseList cL);
-status DestroyClause(clauseList &cL);
-int ChooseLiteral(clauseList cL);
-void Simplify(clauseList &cL, int literal);
-clauseList CopyCnf(clauseList cL);
-status SaveResult(int result, double time, int value[]);
-
-// int isUnitClause(literalList cL);
-// int emptyClause(clauseList cL);
-// void CopyClause(clauseList &a, clauseList b);
-// int removeClause(clauseList& p, clauseList& cL);
-// int removeNode(literalList& q, literalList& head);
-// int addClause(clauseList cnf, clauseList& root);
-// typedef struct Result
-// {
-//     int v; //布尔变元值
-//     int flag; //是否赋值
-// }Result;
-// Result *value=NULL;
+status IsUnitClause(literalList l); //判断是否为单子句
+int FindUnitClause(clauseList cL); //找到单子句并返回该文字
+status DestroyClause(clauseList &cL); //销毁子句
+int ChooseLiteral(clauseList cL); //选择一个未赋值的文字
+void Simplify(clauseList &cL, int literal); //根据选择的文字化简
+clauseList CopyCnf(clauseList cL); //复制cnf
+status SaveResult(int result, double time, int value[]); //保存求解结果
+void X_Sudoku(); //X数独
+void PrintMenu_X(); //打印X数独菜单
+status Generate_Sudoku(int board[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1],int num); //生成数独
+status Is_Valid(int board[SIZE+1][SIZE+1],int row, int col, int v); //判断board[row][col]是否可以填入v
+void Print_Sudoku(int board[SIZE+1][SIZE+1]); //打印数独
+void Play_Sudoku(int board[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1]); //玩数独
+status WriteToFile(int board[SIZE+1][SIZE+1],int num); //将数独约束条件写入文件
 

@@ -6,27 +6,10 @@
  @ 函数名称: ReadFile
  @ 接受参数: clauseList &
  @ 函数功能: 用文件指针fp打开用户指定的文件，并读取文件内容保存到给定参数中
- @ 返回值: int
+ @ 返回值: status
  */
 status ReadFile(clauseList &cL)
 {
-    if(cL!=NULL)
-    {
-        printf(" The CNF has been read.\n");
-        printf(" Do you want to read another? (1/0): ");
-        int choice;
-        scanf("%d",&choice);
-        if(choice==0)
-            return OK;
-        else
-        {
-            // free(result);
-            // result=NULL;
-            DestroyCnf(cL);
-        }
-    }
-    printf(" Please input the file name: ");
-    scanf("%s", fileName);
     FILE *fp = fopen(fileName, "r");
     while(fp==NULL)
     {
@@ -79,7 +62,7 @@ status ReadFile(clauseList &cL)
  @ 函数名称: DestroyCnf
  @ 接受参数: clauseList &
  @ 函数功能: 销毁给定的CNF文件
- @ 返回值: int
+ @ 返回值: status
  */
 status DestroyCnf(clauseList &cL)
 {
@@ -107,7 +90,7 @@ status DestroyCnf(clauseList &cL)
  @ 函数名称: PrintCnf
  @ 接受参数: clauseList
  @ 函数功能: 打印给定的CNF文件
- @ 返回值: int
+ @ 返回值: status
  */
 status PrintCnf(clauseList cL)
 {

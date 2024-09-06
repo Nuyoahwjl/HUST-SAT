@@ -4,7 +4,6 @@
 
 /*
  @ 函数名称: DisPlay
- @ 接受参数: void
  @ 函数功能: 交互界面
  @ 返回值: void
  */
@@ -19,17 +18,32 @@ void DisPlay()
         printf("\n|--------------------------------------------|\n");
         printf(  "|--------Please Choose Your Operation--------|\n");
         printf(  "|--------------------------------------------|\n\n");
-        printf("              Your choice: ");
+        printf(  "              Your choice: ");
         scanf("%d", &op);
         system("cls");
         PrintMenu();
         switch (op)
         {
-            case 1:
-            { 
-                ReadFile(cL);
-                break;
+        case 1:
+        {
+            if (cL != NULL)
+            {
+                printf(" The CNF has been read.\n");
+                printf(" Do you want to read another? (1/0): ");
+                int choice;
+                scanf("%d", &choice);
+                if (choice == 0)
+                    break;
+                else
+                {
+                    DestroyCnf(cL);
+                }
             }
+            printf(" Please input the file name: ");
+            scanf("%s", fileName);
+            ReadFile(cL);
+            break;
+        }
             case 2:
             {
                 if(cL==NULL)
@@ -48,7 +62,6 @@ void DisPlay()
                 else
                 {
                     value = (int *)malloc(sizeof(int) * (boolCount + 1));
-                    // value =(Result *)malloc(sizeof(Result) * (boolCount + 1));
                     for (int i = 1; i <= boolCount; i++)
                         {
                             value[i]= TRUE; //初始化，均赋为1
@@ -92,6 +105,8 @@ void DisPlay()
             }
             case 4:
             {
+                X_Sudoku();
+                PrintMenu();
                 break;
             }
             case 0:
@@ -106,7 +121,8 @@ void DisPlay()
             }        
         }
     }
-    return;
+    if(cL!=NULL)
+        DestroyCnf(cL);
 }
 
 /*
@@ -121,7 +137,7 @@ void PrintMenu()
     printf("|            1. Open the CNF file            |\n");
     printf("|     2. Traverse and output each clause     |\n");
     printf("|   3. Solve using DPLL and save the result  |\n");
-    printf("|          4. Diagonal Sudoku game           |\n");
+    printf("|              4. X_Sudoku game              |\n");
     printf("|                 0.  EXIT                   |\n");
     printf("|============================================|\n\n");
 }

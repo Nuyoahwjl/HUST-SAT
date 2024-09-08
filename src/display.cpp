@@ -70,14 +70,22 @@ void DisPlay()
                         {
                             value[i]= TRUE; //初始化，均赋为1
                         }
-                    LARGE_INTEGER frequency; //计时器频率
-                    LARGE_INTEGER start, end; //设置时间变量
-                    double time;
+                    LARGE_INTEGER frequency,frequency_; //计时器频率
+                    LARGE_INTEGER start, start_, end ,end_; //设置时间变量
+                    double time,time_;
+                    // 未优化的时间
                     QueryPerformanceFrequency(&frequency);
                     QueryPerformanceCounter(&start); //计时开始;
-                    int result = DPLL(cL,value);
+                    int result = DPLL(cL,value,1);
                     QueryPerformanceCounter(&end); //结束
                     time = (double)(end.QuadPart-start.QuadPart)/frequency.QuadPart; //计算运行时间
+                    // 优化后的时间
+                    QueryPerformanceFrequency(&frequency_);
+                    QueryPerformanceCounter(&start_); //计时开始;
+                    DPLL(cL,value,2);
+                    QueryPerformanceCounter(&end_); //结束
+                    time_ = (double)(end_.QuadPart-start_.QuadPart)/frequency_.QuadPart; //计算运行时间
+                    // 输出SAT结果
                     if (result == OK)
                     {
                         printf(" SAT\n\n");
@@ -91,14 +99,17 @@ void DisPlay()
                     }
                     else 
                         printf(" UNSAT\n");
-                    printf("\n Time: %lf ms\n", time*1000);
+                    // 输出优化前后的时间
+                    printf("\n Time: %lf ms(not optimized)\n", time*1000);
+                    printf("\n Time: %lf ms(optimized)\n", time_*1000);
+                    // 是否保存
                     printf("\n Save the result to file? (1/0): ");
                     int choice;
                     scanf("%d", &choice);
                     printf("\n");
                     if (choice == 1)
                     {
-                        if(SaveResult(result, time, value,fileName))
+                        if(SaveResult(result, time, time_, value,fileName))
                             printf(" Save successfully.\n");
                         else
                             printf(" Save failed.\n");

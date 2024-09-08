@@ -159,7 +159,7 @@ START:
     ReadFile(p, name);
     for (int i = 1; i <= SIZE * SIZE * SIZE; i++)
         value[i] = FALSE;
-    if (DPLL(p, value) == ERROR)
+    if (DPLL(p, value,2) == ERROR)
         goto START;
     for (int i = 1; i <= SIZE * SIZE * SIZE + 1; i++)
     {
@@ -174,12 +174,42 @@ START:
         }
     }
     // 挖洞,剩下num个提示数
-    // int res[SIZE+1]={9};
-    int remove=81-num;
-    while (remove > 0) {
+    // int remove=81-num;
+    // while (remove > 0) 
+    // {
+    //     int row = rand() % SIZE + 1;
+    //     int col = rand() % SIZE + 1;
+    //     if (board[row][col] != 0) 
+    //     {
+    //         board[row][col] = 0;
+    //         newBoard[row][col]=0;
+    //         newBoard2[row][col]=0;
+    //         isFixed[row][col] = FALSE;
+    //         remove--;
+    //     }
+    // }
+    int remove = 81 - num;
+    int single=remove/9;
+    int res=remove-9*single;
+    for(int row=1;row<=9;row++)
+    {
+        int s=single;
+        while(s)
+        {
+            int col=rand()%SIZE+1;
+            if (board[row][col] != 0) 
+            {
+                board[row][col] = 0;
+                newBoard[row][col]=0;
+                newBoard2[row][col]=0;
+                isFixed[row][col] = FALSE;
+                s--;
+            }            
+        }
+    }
+    while(res)
+    {
         int row = rand() % SIZE + 1;
-        // while(res[row]<=2)
-        //     row = rand() % SIZE + 1;
         int col = rand() % SIZE + 1;
         if (board[row][col] != 0) 
         {
@@ -187,8 +217,7 @@ START:
             newBoard[row][col]=0;
             newBoard2[row][col]=0;
             isFixed[row][col] = FALSE;
-            remove--;
-            // res[row]--;
+            res--;
         }
     }
     return OK;
@@ -572,9 +601,6 @@ void Shuffle(int arr[], int n) {
 
 // status Generate_Sudoku(int board[SIZE + 1][SIZE + 1], int newBoard[SIZE + 1][SIZE + 1], int newBoard2[SIZE+1][SIZE+1],bool isFixed[SIZE + 1][SIZE + 1], int num)
 // {
-//     // char temp_name[100] = "temp.cnf";
-//     // int n = num;
-// // START:
 //     srand(time(NULL));
 //     // 初始化棋盘
 //     for (int i = 1; i <= SIZE; i++)
@@ -603,13 +629,5 @@ void Shuffle(int arr[], int n) {
 //             }
 //         }
 //     }
-//     // WriteToFile(board, n, temp_name);
-//     // clauseList p = NULL;
-//     // ReadFile(p, temp_name);
-//     // int v[SIZE*SIZE*SIZE+1];
-//     // for (int i = 1; i <= SIZE * SIZE * SIZE; i++)
-//     //     v[i] = FALSE;
-//     // if (DPLL(p, v) == ERROR)
-//     //     goto START;
 //     return OK;
 // }

@@ -146,12 +146,24 @@ clauseList CopyCnf(clauseList cL)
 }
 
 /*
- @ 函数名称: ChooseLiteral
+ @ 函数名称: ChooseLiteral(未优化)
+ @ 接受参数: clauseList
+ @ 函数功能: 选择文字(第一个文字)
+ @ 返回值: int
+ */
+int ChooseLiteral(clauseList cL)
+{
+	return cL->head->literal;
+}
+
+
+/*
+ @ 函数名称: ChooseLiteral_(优化)
  @ 接受参数: clauseList
  @ 函数功能: (没有单子句时的策略)选择文字(出现次数最多的文字)
  @ 返回值: int
  */
-int ChooseLiteral(clauseList cL)
+int ChooseLiteral_(clauseList cL)
 {
 	clauseList lp = cL;
 	literalList dp;
@@ -194,7 +206,6 @@ int ChooseLiteral(clauseList cL)
 	}
 	free(count);
 	return MaxWord;
-	// return cL->head->literal;
 }
 
 /*
@@ -203,7 +214,7 @@ int ChooseLiteral(clauseList cL)
  @ 函数功能: DPLL算法求解SAT问题
  @ 返回值: status
  */
-status DPLL(clauseList &cL,int value[])
+status DPLL(clauseList &cL,int value[],int flag)
 {
 	/*1.单子句规则*/
 	int unitLiteral = FindUnitClause(cL);
@@ -224,7 +235,11 @@ status DPLL(clauseList &cL,int value[])
 		unitLiteral = FindUnitClause(cL);
 	}
 	/*2.选择一个未赋值的文字*/
-	int literal = ChooseLiteral(cL);
+	int literal;
+	if (flag==1)
+		literal = ChooseLiteral(cL);
+	else
+		literal = ChooseLiteral_(cL);
 	/*3.将该文字赋值为真，递归求解*/
 	clauseList newCnf = CopyCnf(cL);
 	clauseList p = (clauseList)malloc(sizeof(clauseNode));
@@ -233,7 +248,7 @@ status DPLL(clauseList &cL,int value[])
 	p->head->next = NULL;
 	p->next = newCnf;
 	newCnf = p; // 插入到表头
-	if (DPLL(newCnf,value) == 1)
+	if (DPLL(newCnf,value,flag) == 1)
 		return 1; // 在第一分支中搜索
 	DestroyCnf(newCnf);
 	/*4.将该文字赋值为假，递归求解*/
@@ -244,7 +259,7 @@ status DPLL(clauseList &cL,int value[])
 	q->head->next = NULL;
 	q->next = newCnf;
 	newCnf = q;
-	status re = DPLL(newCnf,value); // 回溯到执行分支策略的初态进入另一分支
+	status re = DPLL(newCnf,value,flag); // 回溯到执行分支策略的初态进入另一分支
 	// DestroyCnf(cL);
 	return re;
 }
@@ -255,7 +270,7 @@ status DPLL(clauseList &cL,int value[])
  @ 函数功能: 保存求解结果
  @ 返回值: status
  */
-status SaveResult(int result, double time, int value[],char fileName[])
+status SaveResult(int result, double time, double time_, int value[],char fileName[])
 {
 	FILE* fp;
 	char name[100];
@@ -287,10 +302,14 @@ status SaveResult(int result, double time, int value[],char fileName[])
 			if(cnt==1) fprintf(fp,"\nv ");
 			if (value[i] == TRUE) fprintf(fp, "%d ", i);
 				else fprintf(fp, "%d ", -i);
-			if(cnt==20) cnt=0;
+			if(cnt==20) // 每20个一行
+				cnt=0;
 		}
 	}
-	fprintf(fp, "\nt %lfms", time * 1000);  //运行时间/毫秒
+	fprintf(fp, "\nt %lfms(not optimized)", time * 1000);  //运行时间/毫秒
+	fprintf(fp, "\nt %lfms(optimized)", time_ * 1000);  //运行时间/毫秒
+	double optimization_rate = ((time - time_) / time) * 100;
+    fprintf(fp, "\nOptimization Rate: %.2lf%%", optimization_rate);  // 优化率百分比
 	fclose(fp);
 	return OK;
 }

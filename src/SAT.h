@@ -59,12 +59,11 @@ clauseList CopyCnf(clauseList cL); //复制cnf
 status SaveResult(int result, double time, int value[],char fileName[]); //保存求解结果
 void X_Sudoku(); //X数独
 void PrintMenu_X(); //打印X数独菜单
-status Generate_Sudoku(int board[SIZE+1][SIZE+1],int newBoard[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1],int num); //生成数独
+status Generate_Sudoku(int board[SIZE+1][SIZE+1],int newBoard[SIZE+1][SIZE+1],int newBoard2[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1],int num,int value[SIZE*SIZE*SIZE+1]); //生成数独
 status Is_Valid(int board[SIZE+1][SIZE+1],int row, int col, int v); //判断board[row][col]是否可以填入v
 void Print_Sudoku(int board[SIZE+1][SIZE+1]); //打印数独
 void Play_Sudoku(int board[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1]); //玩数独
-status WriteToFile(int board[SIZE+1][SIZE+1],int num); //将数独约束条件写入文件
+status WriteToFile(int board[SIZE+1][SIZE+1],int num,char name[]); //将数独约束条件写入文件
 status Slove(int board[SIZE+1][SIZE+1],int value[SIZE*SIZE*SIZE+1]); //求解数独
-
-// bool Solve_Sudoku(int board[SIZE+1][SIZE+1], int row, int col);
-// void Remove_Numbers(int board[SIZE+1][SIZE+1], int count);
+status Fill_Box(int board[SIZE+1][SIZE+1], int newBoard[SIZE+1][SIZE+1],int newBoard2[SIZE+1][SIZE+1],int rowStart, int colStart);
+void Shuffle(int arr[], int n);

@@ -194,6 +194,7 @@ int ChooseLiteral(clauseList cL)
 	}
 	free(count);
 	return MaxWord;
+	// return cL->head->literal;
 }
 
 /*

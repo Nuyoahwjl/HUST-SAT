@@ -10,7 +10,7 @@
  */
 status IsUnitClause(literalList l)
 {
-	if (l != NULL && l->next == NULL)
+	if (l != NULL && l->next == NULL) // 只有一个文字
 		return TRUE;
 	else
 		return FALSE;
@@ -27,8 +27,8 @@ int FindUnitClause(clauseList cL)
 	clauseList p = cL;
 	while (p)
 	{
-		if (IsUnitClause(p->head))
-			return p->head->literal;
+		if (IsUnitClause(p->head))	 // 是单子句
+			return p->head->literal; // 返回该文字
 		p = p->next;
 	}
 	return 0;
@@ -46,11 +46,11 @@ status DestroyClause(clauseList &cL)
 	while (p)
 	{
 		literalList temp = p;
-		p = p->next;
-		free(temp);
+		p = p->next; // 指向下一个文字
+		free(temp);	 // 释放文字
 	}
-	free(cL);
-	cL = NULL;
+	free(cL);  // 释放子句
+	cL = NULL; // cL指向NULL
 	return OK;
 }
 
@@ -62,40 +62,40 @@ status DestroyClause(clauseList &cL)
  */
 void Simplify(clauseList &cL, int literal)
 {
-	clauseList pre = NULL, p = cL;
+	clauseList pre = NULL, p = cL; // pre指向前一个子句
 	while (p != NULL)
 	{
-		bool clauseDeleted = false;
-		literalList lpre = NULL, q = p->head;
+		bool clauseDeleted = false;			  // 是否删除子句
+		literalList lpre = NULL, q = p->head; // lpre指向前一个文字
 		while (q != NULL)
 		{
 			if (q->literal == literal) // 删除该子句
 			{
-				if (pre == NULL)
+				if (pre == NULL) // 删除的是第一个子句
 					cL = p->next;
-				else
+				else // 删除的不是第一个子句
 					pre->next = p->next;
-				DestroyClause(p);
-				p = (pre == NULL) ? cL : pre->next;
-				clauseDeleted = true;
+				DestroyClause(p);					// 销毁该子句
+				p = (pre == NULL) ? cL : pre->next; // 指向下一个子句
+				clauseDeleted = true;				// 子句已删除
 				break;
 			}
 			else if (q->literal == -literal) // 删除该文字
 			{
-				if (lpre == NULL)
+				if (lpre == NULL) // 删除的是第一个文字
 					p->head = q->next;
-				else
+				else // 删除的不是第一个文字
 					lpre->next = q->next;
-				free(q);
-				q = (lpre == NULL) ? p->head : lpre->next;
+				free(q);								   // 释放该文字
+				q = (lpre == NULL) ? p->head : lpre->next; // 指向下一个文字
 			}
-			else
+			else // 未删除
 			{
 				lpre = q;
 				q = q->next;
 			}
 		}
-		if (!clauseDeleted)
+		if (!clauseDeleted) // 子句未删除
 		{
 			pre = p;
 			p = p->next;
@@ -111,9 +111,10 @@ void Simplify(clauseList &cL, int literal)
  */
 clauseList CopyCnf(clauseList cL)
 {
+	// 初始化新的CNF
 	clauseList newCnf = (clauseList)malloc(sizeof(clauseNode));
-	clauseList lpa, lpb;
-	literalList tpa, tpb;
+	clauseList lpa, lpb;  // lpa指向新的子句,lpb指向旧的子句
+	literalList tpa, tpb; // tpa指向新的文字,tpb指向旧的文字
 	newCnf->head = (literalList)malloc(sizeof(literalNode));
 	newCnf->next = NULL;
 	newCnf->head->next = NULL;
@@ -124,18 +125,17 @@ clauseList CopyCnf(clauseList cL)
 			tpa->literal = tpb->literal;
 			tpa->next = (literalList)malloc(sizeof(literalNode));
 			tpa->next->next = NULL;
-			if (tpb->next == NULL)
+			if (tpb->next == NULL) // 旧的子句中的文字已经复制完
 			{
 				free(tpa->next);
 				tpa->next = NULL;
 			}
 		}
 		lpa->next = (clauseList)malloc(sizeof(clauseNode));
-		;
 		lpa->next->head = (literalList)malloc(sizeof(literalNode));
 		lpa->next->next = NULL;
 		lpa->next->head->next = NULL;
-		if (lpb->next == NULL)
+		if (lpb->next == NULL) // 旧的CNF中的子句已经复制完
 		{
 			free(lpa->next->head);
 			free(lpa->next);
@@ -154,8 +154,8 @@ clauseList CopyCnf(clauseList cL)
 int ChooseLiteral(clauseList cL)
 {
 	return cL->head->literal;
+	// 选择第一个文字(已被选择的文字都已删除)
 }
-
 
 /*
  @ 函数名称: ChooseLiteral_(优化)
@@ -167,24 +167,24 @@ int ChooseLiteral_(clauseList cL)
 {
 	clauseList lp = cL;
 	literalList dp;
-	int *count, i, MaxWord, max; // count记录每个文字出现次数,MaxWord记录出现最多次数的文字
+	int *count, MaxWord, max; // count记录每个文字出现次数,MaxWord记录出现最多次数的文字
 	count = (int *)malloc(sizeof(int) * (boolCount * 2 + 1));
-	for (i = 0; i <= boolCount * 2; i++)
+	for (int i = 0; i <= boolCount * 2; i++)
 		count[i] = 0; // 初始化
 	// 计算子句中各文字出现次数
 	for (lp = cL; lp != NULL; lp = lp->next)
 	{
 		for (dp = lp->head; dp != NULL; dp = dp->next)
 		{
-			if (dp->literal > 0)
+			if (dp->literal > 0) // 正文字
 				count[dp->literal]++;
 			else
-				count[boolCount - dp->literal]++;
+				count[boolCount - dp->literal]++; // 负文字
 		}
 	}
 	max = 0;
 	// 找到出现次数最多的正文字
-	for (i = 1; i <= boolCount; i++)
+	for (int i = 1; i <= boolCount; i++)
 	{
 		if (max < count[i])
 		{
@@ -195,12 +195,12 @@ int ChooseLiteral_(clauseList cL)
 	if (max == 0)
 	{
 		// 若没有出现正文字,找到出现次数最多的负文字
-		for (i = boolCount + 1; i <= boolCount * 2; i++)
+		for (int i = boolCount + 1; i <= boolCount * 2; i++)
 		{
 			if (max < count[i])
 			{
 				max = count[i];
-				MaxWord = -i;
+				MaxWord = boolCount - i;
 			}
 		}
 	}
@@ -214,7 +214,7 @@ int ChooseLiteral_(clauseList cL)
  @ 函数功能: DPLL算法求解SAT问题
  @ 返回值: status
  */
-status DPLL(clauseList &cL,int value[],int flag)
+status DPLL(clauseList &cL, int value[], int flag)
 {
 	/*1.单子句规则*/
 	int unitLiteral = FindUnitClause(cL);
@@ -236,10 +236,10 @@ status DPLL(clauseList &cL,int value[],int flag)
 	}
 	/*2.选择一个未赋值的文字*/
 	int literal;
-	if (flag==1)
-		literal = ChooseLiteral(cL);
+	if (flag == 1)
+		literal = ChooseLiteral(cL); // 未优化
 	else
-		literal = ChooseLiteral_(cL);
+		literal = ChooseLiteral_(cL); // 优化
 	/*3.将该文字赋值为真，递归求解*/
 	clauseList newCnf = CopyCnf(cL);
 	clauseList p = (clauseList)malloc(sizeof(clauseNode));
@@ -248,7 +248,7 @@ status DPLL(clauseList &cL,int value[],int flag)
 	p->head->next = NULL;
 	p->next = newCnf;
 	newCnf = p; // 插入到表头
-	if (DPLL(newCnf,value,flag) == 1)
+	if (DPLL(newCnf, value, flag) == 1)
 		return 1; // 在第一分支中搜索
 	DestroyCnf(newCnf);
 	/*4.将该文字赋值为假，递归求解*/
@@ -259,7 +259,7 @@ status DPLL(clauseList &cL,int value[],int flag)
 	q->head->next = NULL;
 	q->next = newCnf;
 	newCnf = q;
-	status re = DPLL(newCnf,value,flag); // 回溯到执行分支策略的初态进入另一分支
+	status re = DPLL(newCnf, value, flag); // 回溯到执行分支策略的初态进入另一分支
 	// DestroyCnf(cL);
 	return re;
 }
@@ -270,16 +270,16 @@ status DPLL(clauseList &cL,int value[],int flag)
  @ 函数功能: 保存求解结果
  @ 返回值: status
  */
-status SaveResult(int result, double time, double time_, int value[],char fileName[])
+status SaveResult(int result, double time, double time_, int value[], char fileName[])
 {
-	FILE* fp;
+	FILE *fp;
 	char name[100];
 	for (int i = 0; fileName[i] != '\0'; i++)
 	{
-		//修改拓展名
+		// 修改拓展名.res
 		if (fileName[i] == '.' && fileName[i + 4] == '\0')
 		{
-			name[i]='.';
+			name[i] = '.';
 			name[i + 1] = 'r';
 			name[i + 2] = 'e';
 			name[i + 3] = 's';
@@ -288,32 +288,34 @@ status SaveResult(int result, double time, double time_, int value[],char fileNa
 		}
 		name[i] = fileName[i];
 	}
-	if(fopen_s(&fp, name, "w"))
+	if (fopen_s(&fp, name, "w"))
 	{
 		printf(" Fail!\n");
 		return ERROR;
 	}
-	fprintf(fp, "s %d", result);  //求解结果
+	fprintf(fp, "s %d", result); // 求解结果
 	if (result == 1)
 	{
-		//保存解值
-		for (int i = 1,cnt=1; i <= boolCount; i++,cnt++)
+		// 保存解值
+		for (int i = 1, cnt = 1; i <= boolCount; i++, cnt++)
 		{
-			if(cnt==1) fprintf(fp,"\nv ");
-			if (value[i] == TRUE) fprintf(fp, "%d ", i);
-				else fprintf(fp, "%d ", -i);
-			if(cnt==20) // 每20个一行
-				cnt=0;
+			if (cnt == 1)
+				fprintf(fp, "\nv "); // 第一行
+			if (value[i] == TRUE)
+				fprintf(fp, "%d ", i);
+			else
+				fprintf(fp, "%d ", -i);
+			if (cnt == 20) // 每20个一行
+				cnt = 0;
 		}
 	}
-	fprintf(fp, "\nt %lfms(not optimized)", time * 1000);  //运行时间/毫秒
-	fprintf(fp, "\nt %lfms(optimized)", time_ * 1000);  //运行时间/毫秒
-	double optimization_rate = ((time - time_) / time) * 100;
-    fprintf(fp, "\nOptimization Rate: %.2lf%%", optimization_rate);  // 优化率百分比
+	fprintf(fp, "\nt %lfms(not optimized)", time * 1000);	  // 运行时间/毫秒
+	fprintf(fp, "\nt %lfms(optimized)", time_ * 1000);		  // 运行时间/毫秒
+	double optimization_rate = ((time - time_) / time) * 100; // 优化率
+	fprintf(fp, "\nOptimization Rate: %.2lf%%", optimization_rate);
 	fclose(fp);
 	return OK;
 }
-
 
 // status DPLL(clauseList &cL)
 // {

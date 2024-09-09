@@ -38,10 +38,6 @@ typedef struct clauseNode
 /*变量*/
 int boolCount; //布尔变元个数
 int clauseCount; //子句个数
-// char fileName[100]; //文件名
-// int *value=NULL; //记录布尔变元值(真/假)的数组
-// int board[SIZE+1][SIZE+1]; //数独棋盘
-// bool isFixed[SIZE+1][SIZE+1]; //记录是否为提示数字
 
 /*函数声明*/
 void DisPlay(); //主交互界面

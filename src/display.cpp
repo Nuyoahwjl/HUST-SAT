@@ -74,13 +74,13 @@ void DisPlay()
                 // 未优化的时间
                 QueryPerformanceFrequency(&frequency);
                 QueryPerformanceCounter(&start); // 计时开始;
-                int result = DPLL(cL, value, 1);
+                int result = DPLL(cL, value, 2);
                 QueryPerformanceCounter(&end);                                       // 结束
                 time = (double)(end.QuadPart - start.QuadPart) / frequency.QuadPart; // 计算运行时间
                 // 优化后的时间
                 QueryPerformanceFrequency(&frequency_);
                 QueryPerformanceCounter(&start_); // 计时开始;
-                DPLL(cL, value, 2);
+                DPLL(cL, value, 3);
                 QueryPerformanceCounter(&end_);                                          // 结束
                 time_ = (double)(end_.QuadPart - start_.QuadPart) / frequency_.QuadPart; // 计算运行时间
                 // 输出SAT结果

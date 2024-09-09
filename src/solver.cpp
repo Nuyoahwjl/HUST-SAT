@@ -351,7 +351,7 @@ status SaveResult(int result, double time, double time_, int value[], char fileN
 		// 保存解值
 		for (int i = 1, cnt = 1; i <= boolCount; i++, cnt++)
 		{
-			if (cnt == 1)
+			if (i == 1)
 				fprintf(fp, "\nv "); // 第一行
 			if (value[i] == TRUE)
 				fprintf(fp, "%-d ", i);

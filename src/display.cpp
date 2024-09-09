@@ -99,6 +99,7 @@ void DisPlay()
                 else // UNSAT
                     printf(" UNSAT\n");
                 // 输出优化前后的时间
+                // time_=0;
                 printf("\n Time: %lf ms(not optimized)\n", time * 1000);
                 printf("\n Time: %lf ms(optimized)\n", time_ * 1000);
                 // 是否保存

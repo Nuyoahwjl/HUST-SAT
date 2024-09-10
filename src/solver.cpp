@@ -348,23 +348,23 @@ status SaveResult(int result, double time, double time_, int value[], char fileN
 	fprintf(fp, "s %d", result); // 求解结果
 	if (result == 1)
 	{
+		fprintf(fp, "\nv");
 		// 保存解值
 		for (int i = 1, cnt = 1; i <= boolCount; i++, cnt++)
 		{
-			if (i == 1)
-				fprintf(fp, "\nv "); // 第一行
-			if (value[i] == TRUE)
-				fprintf(fp, "%-d ", i);
+			if(value[i]==true)
+				fprintf(fp, " %d", i);
 			else
-				fprintf(fp, "%-d ", -i);
-			if (cnt == 20) // 每20个一行
-				cnt = 0;
+				fprintf(fp, " %d", -i);
 		}
 	}
-	fprintf(fp, "\nt %lfms(not optimized)", time * 1000);	  // 运行时间/毫秒
-	fprintf(fp, "\nt %lfms(optimized)", time_ * 1000);		  // 运行时间/毫秒
-	double optimization_rate = ((time - time_) / time) * 100; // 优化率
-	fprintf(fp, "\nOptimization Rate: %.2lf%%", optimization_rate);
+	fprintf(fp, "\nt %lfms", time * 1000);	  // 运行时间/毫秒
+	if(time_ != 0)
+	{
+		fprintf(fp, "\nt %lfms(optimized)", time_ * 1000);		  // 运行时间/毫秒
+		double optimization_rate = ((time - time_) / time) * 100; // 优化率
+		fprintf(fp, "\nOptimization Rate: %.2lf%%", optimization_rate);
+	}
 	fclose(fp);
 	return OK;
 }

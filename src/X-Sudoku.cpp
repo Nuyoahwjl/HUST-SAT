@@ -160,7 +160,7 @@ START:
     ReadFile(p, name); // 读取文件并解析CNF
     for (int i = 1; i <= SIZE * SIZE * SIZE; i++)
         value[i] = FALSE;
-    if (DPLL(p, value, 2) == ERROR) // 求解数独
+    if (DPLL(p, value, 3) == ERROR) // 求解数独
         goto START;
     // 将DPLL的结果填入数独
     for (int i = 1; i <= SIZE * SIZE * SIZE + 1; i++)

@@ -74,15 +74,9 @@ void DisPlay()
                 // 未优化的时间
                 QueryPerformanceFrequency(&frequency);
                 QueryPerformanceCounter(&start); // 计时开始;
-                int result = DPLL(cL, value, 3);
+                int result = DPLL(cL, value, 2);
                 QueryPerformanceCounter(&end);                                       // 结束
                 time = (double)(end.QuadPart - start.QuadPart) / frequency.QuadPart; // 计算运行时间
-                // 优化后的时间
-                // QueryPerformanceFrequency(&frequency_);
-                // QueryPerformanceCounter(&start_); // 计时开始;
-                // DPLL(cL, value, 3);
-                // QueryPerformanceCounter(&end_);                                          // 结束
-                // time_ = (double)(end_.QuadPart - start_.QuadPart) / frequency_.QuadPart; // 计算运行时间
                 // 输出SAT结果
                 if (result == OK) // SAT
                 {
@@ -98,10 +92,23 @@ void DisPlay()
                 }
                 else // UNSAT
                     printf(" UNSAT\n");
-                // 输出优化前后的时间
-                time_=0;
+                // 输出优化前的时间
                 printf("\n Time: %lf ms(not optimized)\n", time * 1000);
-                printf("\n Time: %lf ms(optimized)\n", time_ * 1000);
+                // 是否优化
+                int ch;
+                printf("\n Do you want to optimize the algorithm? (1/0): ");
+                scanf("%d", &ch);
+                if (ch == 0)
+                    time=0;
+                else 
+                {
+                    QueryPerformanceFrequency(&frequency_);
+                    QueryPerformanceCounter(&start_); // 计时开始;
+                    DPLL(cL, value, 3);
+                    QueryPerformanceCounter(&end_);                                          // 结束
+                    time_ = (double)(end_.QuadPart - start_.QuadPart) / frequency_.QuadPart; // 计算运行时间
+                    printf("\n Time: %lf ms(optimized)\n", time_ * 1000);
+                }
                 // 是否保存
                 printf("\n Save the result to file? (1/0): ");
                 int choice;

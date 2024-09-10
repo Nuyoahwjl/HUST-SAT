@@ -1,4 +1,4 @@
 s 0
-t 254.612800ms(not optimized)
-t 117.337400ms(optimized)
-Optimization Rate: 53.92%
+t 169.315300ms
+t 62.999500ms(optimized)
+Optimization Rate: 62.79%

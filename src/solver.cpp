@@ -183,7 +183,7 @@ int ChooseLiteral_2(CNF cnf)
 	}
 	max = 0;
 	// 找到出现次数最多的正文字
-	for (int i = 1; i <= cnf->boolCount ;i++)
+	for (int i = 1; i <= cnf->boolCount; i++)
 	{
 		if (max < count[i])
 		{
@@ -246,7 +246,7 @@ int ChooseLiteral_3(CNF cnf)
 	}
 	// 找到最频繁的文字
 	int maxCount = 0;
-	for (int i = 0; i < cnf->boolCount* 2 + 1; i++)
+	for (int i = 0; i < cnf->boolCount * 2 + 1; i++)
 	{
 		if (count[i] > maxCount)
 		{
@@ -293,7 +293,7 @@ status DPLL(CNF cnf, int value[], int flag)
 	else
 		literal = ChooseLiteral_3(cnf);
 	/*3.将该文字赋值为真，递归求解*/
-	CNF newCnf=(CNF)malloc(sizeof(cnfNode));
+	CNF newCnf = (CNF)malloc(sizeof(cnfNode));
 	newCnf->root = CopyCnf(cnf->root); // 复制CNF
 	newCnf->boolCount = cnf->boolCount;
 	newCnf->clauseCount = cnf->clauseCount;
@@ -314,7 +314,7 @@ status DPLL(CNF cnf, int value[], int flag)
 	q->head->literal = -literal;
 	q->head->next = NULL;
 	q->next = cnf->root;
-	cnf->root = q; // 插入到表头
+	cnf->root = q;						// 插入到表头
 	status re = DPLL(cnf, value, flag); // 回溯到执行分支策略的初态进入另一分支
 	// DestroyCnf(cL);
 	return re;
@@ -326,7 +326,7 @@ status DPLL(CNF cnf, int value[], int flag)
  @ 函数功能: 保存求解结果
  @ 返回值: status
  */
-status SaveResult(int result, double time, double time_, int value[], char fileName[],int boolCount)
+status SaveResult(int result, double time, double time_, int value[], char fileName[], int boolCount)
 {
 	FILE *fp;
 	char name[100];
@@ -356,14 +356,14 @@ status SaveResult(int result, double time, double time_, int value[], char fileN
 		// 保存解值
 		for (int i = 1, cnt = 1; i <= boolCount; i++, cnt++)
 		{
-			if(value[i]==true)
+			if (value[i] == true)
 				fprintf(fp, " %d", i);
 			else
 				fprintf(fp, " %d", -i);
 		}
 	}
-	fprintf(fp, "\nt %lfms", time * 1000);	  // 运行时间/毫秒
-	if(time_ != 0)
+	fprintf(fp, "\nt %lfms", time * 1000); // 运行时间/毫秒
+	if (time_ != 0)
 	{
 		fprintf(fp, "\nt %lfms(optimized)", time_ * 1000);		  // 运行时间/毫秒
 		double optimization_rate = ((time - time_) / time) * 100; // 优化率
@@ -372,4 +372,3 @@ status SaveResult(int result, double time, double time_, int value[], char fileN
 	fclose(fp);
 	return OK;
 }
-

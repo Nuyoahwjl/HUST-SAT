@@ -11,8 +11,8 @@ void DisPlay()
 {
     int *value = NULL; // 存储文字的真值
     // clauseList cL = NULL;
-    CNF cnf=(CNF)malloc(sizeof(cnfNode));
-    cnf->root=NULL;
+    CNF cnf = (CNF)malloc(sizeof(cnfNode));
+    cnf->root = NULL;
     char fileName[100]; // 文件名
     PrintMenu();        // 打印菜单
     int op = 1;
@@ -29,7 +29,7 @@ void DisPlay()
         {
         case 1:
         {
-            if (cnf->root!= NULL) // 如果已经打开了CNF文件
+            if (cnf->root != NULL) // 如果已经打开了CNF文件
             {
                 printf(" The CNF has been read.\n");
                 printf(" Do you want to read another? (1/0): ");
@@ -52,7 +52,7 @@ void DisPlay()
         }
         case 2:
         {
-            if (cnf->root== NULL) // 如果没有打开CNF文件
+            if (cnf->root == NULL) // 如果没有打开CNF文件
                 printf(" You haven't open the CNF file.\n");
             else
                 PrintCnf(cnf); // 打印CNF文件
@@ -67,7 +67,7 @@ void DisPlay()
             }
             else
             {
-                CNF newCnf=(CNF)malloc(sizeof(cnfNode));
+                CNF newCnf = (CNF)malloc(sizeof(cnfNode));
                 newCnf->root = CopyCnf(cnf->root); // 复制CNF
                 newCnf->boolCount = cnf->boolCount;
                 newCnf->clauseCount = cnf->clauseCount;
@@ -105,10 +105,10 @@ void DisPlay()
                 printf("\n Do you want to optimize the algorithm? (1/0): ");
                 scanf("%d", &ch);
                 if (ch == 0)
-                    time_=0;
-                else 
+                    time_ = 0;
+                else
                 {
-                    DestroyCnf(newCnf->root); // 销毁未优化的CNF
+                    DestroyCnf(newCnf->root);          // 销毁未优化的CNF
                     newCnf->root = CopyCnf(cnf->root); // 复制CNF
                     QueryPerformanceFrequency(&frequency_);
                     QueryPerformanceCounter(&start_); // 计时开始;
@@ -125,7 +125,7 @@ void DisPlay()
                 if (choice == 1)
                 {
                     // 保存求解结果
-                    if (SaveResult(result, time, time_, value, fileName,cnf->boolCount))
+                    if (SaveResult(result, time, time_, value, fileName, cnf->boolCount))
                         printf(" Save successfully.\n");
                     else
                         printf(" Save failed.\n");

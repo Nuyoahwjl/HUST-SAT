@@ -30,8 +30,8 @@ status ReadFile(CNF &cnf, char fileName[])
     getc(fp);
     getc(fp);
     fscanf(fp, "%d%d", &cnf->boolCount, &cnf->clauseCount); // 读取布尔变元个数和子句个数                              // 初始化布尔变元个数
-    cnf->root = NULL;                                    // 初始化CNF
-    clauseList lastClause = NULL;                 // 用于记录上一个一个子句
+    cnf->root = NULL;                                       // 初始化CNF
+    clauseList lastClause = NULL;                           // 用于记录上一个一个子句
     for (int i = 0; i < cnf->clauseCount; i++)
     {
         // 读取子句

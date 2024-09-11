@@ -35,16 +35,13 @@ typedef struct clauseNode
     struct clauseNode *next; // 指向下一个子句
 } clauseNode, *clauseList;
 
+/*CNF文件*/
 typedef struct cnfNode
 {
-    clauseList root;
-    int boolCount;
-    int clauseCount;
-} cnfNode,*CNF;
-
-/*变量*/
-// int boolNum;   // 布尔变元个数
-// int clauseCount; // 子句个数
+    clauseList root; // 指向CNF的第一个子句
+    int boolCount;   // 布尔变元个数
+    int clauseCount; // 子句个数
+} cnfNode, *CNF;
 
 /*函数声明*/
 void DisPlay(); // 主交互界面
@@ -55,7 +52,7 @@ status PrintCnf(CNF cnf); // 打印cnf
 status DPLL(CNF cnf,int value[],int flag); // DPLL算法
 status IsUnitClause(literalList l); // 判断是否为单子句
 int FindUnitClause(clauseList cL); // 找到单子句并返回该文字
-status DestroyClause(clauseList &cL); // 销毁子句S
+status DestroyClause(clauseList &cL); // 销毁子句
 int ChooseLiteral_1(CNF cnf); // 选择一个未赋值的文字(未优化)
 int ChooseLiteral_2(CNF cnf); // 选择一个未赋值的文字(优化)
 int ChooseLiteral_3(CNF cnf); // 改进2

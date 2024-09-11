@@ -201,7 +201,7 @@ START:
     {
         int row = rand() % SIZE + 1;
         // while(c[row-1]<=2)
-            // row = rand() % SIZE + 1;
+        // row = rand() % SIZE + 1;
         int col = rand() % SIZE + 1;
         if (board[row][col] != 0)
         {

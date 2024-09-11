@@ -10,7 +10,9 @@
 void DisPlay()
 {
     int *value = NULL; // 存储文字的真值
-    clauseList cL = NULL;
+    // clauseList cL = NULL;
+    CNF cnf=(CNF)malloc(sizeof(cnfNode));
+    cnf->root=NULL;
     char fileName[100]; // 文件名
     PrintMenu();        // 打印菜单
     int op = 1;
@@ -27,7 +29,7 @@ void DisPlay()
         {
         case 1:
         {
-            if (cL != NULL) // 如果已经打开了CNF文件
+            if (cnf->root!= NULL) // 如果已经打开了CNF文件
             {
                 printf(" The CNF has been read.\n");
                 printf(" Do you want to read another? (1/0): ");
@@ -37,12 +39,12 @@ void DisPlay()
                     break;
                 else // 重新读取
                 {
-                    DestroyCnf(cL); // 销毁当前解析的CNF
+                    DestroyCnf(cnf->root); // 销毁当前解析的CNF
                 }
             }
             printf(" Please input the file name: ");
             scanf("%s", fileName);
-            if (ReadFile(cL, fileName) == OK) // 读取文件并解析CNF
+            if (ReadFile(cnf, fileName) == OK) // 读取文件并解析CNF
                 printf(" Read successfully.\n");
             else
                 printf(" Read failed.\n");
@@ -50,24 +52,27 @@ void DisPlay()
         }
         case 2:
         {
-            if (cL == NULL) // 如果没有打开CNF文件
+            if (cnf->root== NULL) // 如果没有打开CNF文件
                 printf(" You haven't open the CNF file.\n");
             else
-                PrintCnf(cL); // 打印CNF文件
+                PrintCnf(cnf); // 打印CNF文件
             break;
         }
         case 3:
         {
-            if (cL == NULL) // 如果没有打开CNF文件
+            if (cnf->root == NULL) // 如果没有打开CNF文件
             {
                 printf(" You haven't open the CNF file.\n");
                 break;
             }
             else
             {
-                clauseList cL_ = CopyCnf(cL); // 复制CNF
-                value = (int *)malloc(sizeof(int) * (boolCount + 1));
-                for (int i = 1; i <= boolCount; i++)
+                CNF newCnf=(CNF)malloc(sizeof(cnfNode));
+                newCnf->root = CopyCnf(cnf->root); // 复制CNF
+                newCnf->boolCount = cnf->boolCount;
+                newCnf->clauseCount = cnf->clauseCount;
+                value = (int *)malloc(sizeof(int) * (cnf->boolCount + 1));
+                for (int i = 1; i <= cnf->boolCount; i++)
                     value[i] = TRUE;                    // 初始化，均赋为TRUE
                 LARGE_INTEGER frequency, frequency_;    // 计时器频率
                 LARGE_INTEGER start, start_, end, end_; // 设置时间变量
@@ -75,7 +80,7 @@ void DisPlay()
                 // 未优化的时间
                 QueryPerformanceFrequency(&frequency);
                 QueryPerformanceCounter(&start); // 计时开始;
-                int result = DPLL(cL_, value, 3);
+                int result = DPLL(newCnf, value, 3);
                 QueryPerformanceCounter(&end);                                       // 结束
                 time = (double)(end.QuadPart - start.QuadPart) / frequency.QuadPart; // 计算运行时间
                 // 输出SAT结果
@@ -83,7 +88,7 @@ void DisPlay()
                 {
                     printf(" SAT\n\n");
                     // 输出文字的真值
-                    for (int i = 1; i <= boolCount; i++)
+                    for (int i = 1; i <= cnf->boolCount; i++)
                     {
                         if (value[i] == TRUE)
                             printf(" %-4d: TRUE\n", i);
@@ -103,11 +108,11 @@ void DisPlay()
                     time_=0;
                 else 
                 {
-                    DestroyCnf(cL_); // 销毁未优化的CNF
-                    cL_ = CopyCnf(cL); // 复制CNF
+                    DestroyCnf(newCnf->root); // 销毁未优化的CNF
+                    newCnf->root = CopyCnf(cnf->root); // 复制CNF
                     QueryPerformanceFrequency(&frequency_);
                     QueryPerformanceCounter(&start_); // 计时开始;
-                    DPLL(cL_, value, 2);
+                    DPLL(newCnf, value, 2);
                     QueryPerformanceCounter(&end_);                                          // 结束
                     time_ = (double)(end_.QuadPart - start_.QuadPart) / frequency_.QuadPart; // 计算运行时间
                     printf("\n Time: %lf ms(optimized)\n", time_ * 1000);
@@ -120,7 +125,7 @@ void DisPlay()
                 if (choice == 1)
                 {
                     // 保存求解结果
-                    if (SaveResult(result, time, time_, value, fileName))
+                    if (SaveResult(result, time, time_, value, fileName,cnf->boolCount))
                         printf(" Save successfully.\n");
                     else
                         printf(" Save failed.\n");
@@ -146,8 +151,9 @@ void DisPlay()
         }
         }
     }
-    if (cL != NULL)
-        DestroyCnf(cL); // 退出时销毁CNF
+    if (cnf->root != NULL)
+        DestroyCnf(cnf->root); // 退出时销毁CNF
+    free(cnf);
     return;
 }
 

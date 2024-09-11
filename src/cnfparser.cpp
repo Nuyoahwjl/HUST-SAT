@@ -8,7 +8,7 @@
  @ 函数功能: 用文件指针fp打开用户指定的文件，并读取文件内容保存到给定参数中
  @ 返回值: status
  */
-status ReadFile(clauseList &cL, char fileName[])
+status ReadFile(CNF &cnf, char fileName[])
 {
     FILE *fp = fopen(fileName, "r");
     while (fp == NULL)
@@ -29,10 +29,10 @@ status ReadFile(clauseList &cL, char fileName[])
     getc(fp);
     getc(fp);
     getc(fp);
-    fscanf(fp, "%d%d", &boolCount, &clauseCount); // 读取布尔变元个数和子句个数
-    cL = NULL;                                    // 初始化CNF
+    fscanf(fp, "%d%d", &cnf->boolCount, &cnf->clauseCount); // 读取布尔变元个数和子句个数                              // 初始化布尔变元个数
+    cnf->root = NULL;                                    // 初始化CNF
     clauseList lastClause = NULL;                 // 用于记录上一个一个子句
-    for (int i = 0; i < clauseCount; i++)
+    for (int i = 0; i < cnf->clauseCount; i++)
     {
         // 读取子句
         clauseList newClause = (clauseList)malloc(sizeof(clauseNode));
@@ -53,8 +53,8 @@ status ReadFile(clauseList &cL, char fileName[])
             lastLiteral = newLiteral; // 更新上一个文字
             fscanf(fp, "%d", &number);
         }
-        if (cL == NULL) // 如果是第一个子句
-            cL = newClause;
+        if (cnf->root == NULL) // 如果是第一个子句
+            cnf->root = newClause;
         else
             lastClause->next = newClause;
         lastClause = newClause; // 更新上一个子句
@@ -94,17 +94,17 @@ status DestroyCnf(clauseList &cL)
  @ 函数功能: 打印给定的CNF文件
  @ 返回值: status
  */
-status PrintCnf(clauseList cL)
+status PrintCnf(CNF cnf)
 {
-    clauseList p = cL;
+    clauseList p = cnf->root;
     if (p == NULL) // 如果没有子句
     {
         printf(" No clauses.\n");
         return ERROR;
     }
     printf("  The CNF is:\n");
-    printf("  boolCount:%d\n", boolCount);     // 打印布尔变元个数
-    printf("  clauseCount:%d\n", clauseCount); // 打印子句个数
+    printf("  boolCount:%d\n", cnf->boolCount);     // 打印布尔变元个数
+    printf("  clauseCount:%d\n", cnf->clauseCount); // 打印子句个数
     while (p)
     {
         literalList q = p->head; // 指向子句的第一个文字

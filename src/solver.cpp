@@ -151,9 +151,9 @@ clauseList CopyCnf(clauseList cL)
  @ 函数功能: 选择文字(第一个文字)
  @ 返回值: int
  */
-int ChooseLiteral_1(clauseList cL)
+int ChooseLiteral_1(CNF cnf)
 {
-	return cL->head->literal;
+	return cnf->root->head->literal;
 }
 
 /*
@@ -162,28 +162,28 @@ int ChooseLiteral_1(clauseList cL)
  @ 函数功能: (没有单子句时的策略)选择文字(出现次数最多的文字)
  @ 返回值: int
  */
-int ChooseLiteral_2(clauseList cL)
+int ChooseLiteral_2(CNF cnf)
 {
-	clauseList lp = cL;
+	clauseList lp = cnf->root;
 	literalList dp;
 	int *count, MaxWord, max; // count记录每个文字出现次数,MaxWord记录出现最多次数的文字
-	count = (int *)malloc(sizeof(int) * (boolCount * 2 + 1));
-	for (int i = 0; i <= boolCount * 2; i++)
+	count = (int *)malloc(sizeof(int) * (cnf->boolCount * 2 + 1));
+	for (int i = 0; i <= cnf->boolCount * 2; i++)
 		count[i] = 0; // 初始化
 	// 计算子句中各文字出现次数
-	for (lp = cL; lp != NULL; lp = lp->next)
+	for (lp = cnf->root; lp != NULL; lp = lp->next)
 	{
 		for (dp = lp->head; dp != NULL; dp = dp->next)
 		{
 			if (dp->literal > 0) // 正文字
 				count[dp->literal]++;
 			else
-				count[boolCount - dp->literal]++; // 负文字
+				count[cnf->boolCount - dp->literal]++; // 负文字
 		}
 	}
 	max = 0;
 	// 找到出现次数最多的正文字
-	for (int i = 1; i <= boolCount; i++)
+	for (int i = 1; i <= cnf->boolCount ;i++)
 	{
 		if (max < count[i])
 		{
@@ -194,12 +194,12 @@ int ChooseLiteral_2(clauseList cL)
 	if (max == 0)
 	{
 		// 若没有出现正文字,找到出现次数最多的负文字
-		for (int i = boolCount + 1; i <= boolCount * 2; i++)
+		for (int i = cnf->boolCount + 1; i <= cnf->boolCount * 2; i++)
 		{
 			if (max < count[i])
 			{
 				max = count[i];
-				MaxWord = boolCount - i;
+				MaxWord = cnf->boolCount - i;
 			}
 		}
 	}
@@ -213,10 +213,10 @@ int ChooseLiteral_2(clauseList cL)
  @ 函数功能: 选择最短子句中出现次数最多的文字
  @ 返回值: int
 */
-int ChooseLiteral_3(clauseList cL)
+int ChooseLiteral_3(CNF cnf)
 {
-	clauseList p = cL;
-	int *count = (int *)calloc(boolCount * 2 + 1, sizeof(int));
+	clauseList p = cnf->root;
+	int *count = (int *)calloc(cnf->boolCount * 2 + 1, sizeof(int));
 	int minSize = INT_MAX; // 初始化为大于可能的最大子句长度
 	int literal = 0;
 	clauseList temp = NULL;
@@ -241,17 +241,17 @@ int ChooseLiteral_3(clauseList cL)
 	literalList q = temp->head;
 	while (q != NULL)
 	{
-		count[q->literal + boolCount]++;
+		count[q->literal + cnf->boolCount]++;
 		q = q->next;
 	}
 	// 找到最频繁的文字
 	int maxCount = 0;
-	for (int i = 0; i < boolCount * 2 + 1; i++)
+	for (int i = 0; i < cnf->boolCount* 2 + 1; i++)
 	{
 		if (count[i] > maxCount)
 		{
 			maxCount = count[i];
-			literal = i - boolCount;
+			literal = i - cnf->boolCount;
 		}
 	}
 	free(count);
@@ -264,16 +264,16 @@ int ChooseLiteral_3(clauseList cL)
  @ 函数功能: DPLL算法求解SAT问题
  @ 返回值: status
  */
-status DPLL(clauseList &cL, int value[], int flag)
+status DPLL(CNF cnf, int value[], int flag)
 {
 	/*1.单子句规则*/
-	int unitLiteral = FindUnitClause(cL);
+	int unitLiteral = FindUnitClause(cnf->root);
 	while (unitLiteral != 0)
 	{
 		value[abs(unitLiteral)] = (unitLiteral > 0) ? TRUE : FALSE;
-		Simplify(cL, unitLiteral);
+		Simplify(cnf->root, unitLiteral);
 		// 终止条件
-		clauseList p = cL;
+		clauseList p = cnf->root;
 		if (p == NULL)
 			return OK; // 所有都被满足了
 		while (p)
@@ -282,27 +282,30 @@ status DPLL(clauseList &cL, int value[], int flag)
 				return ERROR;
 			p = p->next;
 		}
-		unitLiteral = FindUnitClause(cL);
+		unitLiteral = FindUnitClause(cnf->root);
 	}
 	/*2.选择一个未赋值的文字*/
 	int literal;
 	if (flag == 1)
-		literal = ChooseLiteral_1(cL); // 未优化
+		literal = ChooseLiteral_1(cnf); // 未优化
 	else if (flag == 2)
-		literal = ChooseLiteral_2(cL); // 优化
+		literal = ChooseLiteral_2(cnf); // 优化
 	else
-		literal = ChooseLiteral_3(cL);
+		literal = ChooseLiteral_3(cnf);
 	/*3.将该文字赋值为真，递归求解*/
-	clauseList newCnf = CopyCnf(cL);
+	CNF newCnf=(CNF)malloc(sizeof(cnfNode));
+	newCnf->root = CopyCnf(cnf->root); // 复制CNF
+	newCnf->boolCount = cnf->boolCount;
+	newCnf->clauseCount = cnf->clauseCount;
 	clauseList p = (clauseList)malloc(sizeof(clauseNode));
 	p->head = (literalList)malloc(sizeof(literalNode));
 	p->head->literal = literal;
 	p->head->next = NULL;
-	p->next = newCnf;
-	newCnf = p; // 插入到表头
+	p->next = newCnf->root;
+	newCnf->root = p; // 插入到表头
 	if (DPLL(newCnf, value, flag) == 1)
 		return 1; // 在第一分支中搜索
-	DestroyCnf(newCnf);
+	DestroyCnf(newCnf->root);
 	/*4.将该文字赋值为假，递归求解*/
 	// newCnf = CopyCnf(cL);
 	// newCnf=cL;
@@ -310,9 +313,9 @@ status DPLL(clauseList &cL, int value[], int flag)
 	q->head = (literalList)malloc(sizeof(literalNode));
 	q->head->literal = -literal;
 	q->head->next = NULL;
-	q->next = cL;
-	cL = q; // 插入到表头
-	status re = DPLL(cL, value, flag); // 回溯到执行分支策略的初态进入另一分支
+	q->next = cnf->root;
+	cnf->root = q; // 插入到表头
+	status re = DPLL(cnf, value, flag); // 回溯到执行分支策略的初态进入另一分支
 	// DestroyCnf(cL);
 	return re;
 }
@@ -323,7 +326,7 @@ status DPLL(clauseList &cL, int value[], int flag)
  @ 函数功能: 保存求解结果
  @ 返回值: status
  */
-status SaveResult(int result, double time, double time_, int value[], char fileName[])
+status SaveResult(int result, double time, double time_, int value[], char fileName[],int boolCount)
 {
 	FILE *fp;
 	char name[100];

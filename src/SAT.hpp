@@ -35,26 +35,33 @@ typedef struct clauseNode
     struct clauseNode *next; // 指向下一个子句
 } clauseNode, *clauseList;
 
+typedef struct cnfNode
+{
+    clauseList root;
+    int boolCount;
+    int clauseCount;
+} cnfNode,*CNF;
+
 /*变量*/
-int boolCount;   // 布尔变元个数
-int clauseCount; // 子句个数
+// int boolNum;   // 布尔变元个数
+// int clauseCount; // 子句个数
 
 /*函数声明*/
 void DisPlay(); // 主交互界面
 void PrintMenu(); // 打印菜单
-status ReadFile(clauseList &cL,char fileName[]); // 读取文件并解析cnf
+status ReadFile(CNF &cnf,char fileName[]); // 读取文件并解析cnf
 status DestroyCnf(clauseList &cL); // 销毁当前解析的cnf
-status PrintCnf(clauseList cL); // 打印cnf
-status DPLL(clauseList &cL,int value[],int flag); // DPLL算法
+status PrintCnf(CNF cnf); // 打印cnf
+status DPLL(CNF cnf,int value[],int flag); // DPLL算法
 status IsUnitClause(literalList l); // 判断是否为单子句
 int FindUnitClause(clauseList cL); // 找到单子句并返回该文字
-status DestroyClause(clauseList &cL); // 销毁子句
-int ChooseLiteral_1(clauseList cL); // 选择一个未赋值的文字(未优化)
-int ChooseLiteral_2(clauseList cL); // 选择一个未赋值的文字(优化)
-int ChooseLiteral_3(clauseList cL); // 改进2
+status DestroyClause(clauseList &cL); // 销毁子句S
+int ChooseLiteral_1(CNF cnf); // 选择一个未赋值的文字(未优化)
+int ChooseLiteral_2(CNF cnf); // 选择一个未赋值的文字(优化)
+int ChooseLiteral_3(CNF cnf); // 改进2
 void Simplify(clauseList &cL, int literal); // 根据选择的文字化简
 clauseList CopyCnf(clauseList cL); // 复制cnf
-status SaveResult(int result, double time, double time_, int value[],char fileName[]); // 保存求解结果
+status SaveResult(int result, double time, double time_, int value[],char fileName[],int boolCount); // 保存求解结果
 void X_Sudoku(); // X数独
 void PrintMenu_X(); // 打印X数独菜单
 status Generate_Sudoku(int board[SIZE+1][SIZE+1],int newBoard[SIZE+1][SIZE+1],int newBoard2[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1],int num,int value[SIZE*SIZE*SIZE+1]); // 生成数独

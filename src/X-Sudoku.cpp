@@ -156,7 +156,8 @@ START:
         Fill_Box(board, newBoard, newBoard2, i, i); // 主对角线3个填充3x3的宫格
     }
     WriteToFile(board, 27, name); // 将数独约束条件写入文件
-    clauseList p = NULL;
+    CNF p = (CNF)malloc(sizeof(cnfNode));
+    p->root = NULL;
     ReadFile(p, name); // 读取文件并解析CNF
     for (int i = 1; i <= SIZE * SIZE * SIZE; i++)
         value[i] = FALSE;

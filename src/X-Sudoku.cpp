@@ -1,6 +1,6 @@
 /*----------------------------X-Sudoku----------------------------*/
 
-#include "SAT.h"
+#include "SAT.hpp"
 
 /*
  @ 函数名称: X_Sudoku
@@ -179,6 +179,7 @@ START:
     int remove = 81 - num;
     int single = remove / 9; // single一定小于等于7
     int res = remove - 9 * single;
+    // int c[SIZE]={9-single};
     for (int row = 1; row <= 9; row++) // 每行挖single个
     {
         int s = single;
@@ -198,6 +199,8 @@ START:
     while (res) // 挖剩下的
     {
         int row = rand() % SIZE + 1;
+        // while(c[row-1]<=2)
+            // row = rand() % SIZE + 1;
         int col = rand() % SIZE + 1;
         if (board[row][col] != 0)
         {
@@ -206,6 +209,7 @@ START:
             newBoard2[row][col] = 0;
             isFixed[row][col] = FALSE;
             res--;
+            // c[row-1]--;
         }
     }
     return OK;

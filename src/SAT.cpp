@@ -1,6 +1,6 @@
 /*----------------------------main----------------------------*/
 
-#include "SAT.h"
+#include "SAT.hpp"
 #include "display.cpp"
 #include "cnfparser.cpp"
 #include "solver.cpp"

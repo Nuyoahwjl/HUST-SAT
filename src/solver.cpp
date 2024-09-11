@@ -1,6 +1,6 @@
 /*----------------------------solver----------------------------*/
 
-#include "SAT.h"
+#include "SAT.hpp"
 
 /*
  @ 函数名称: IsUnitClause
@@ -304,14 +304,15 @@ status DPLL(clauseList &cL, int value[], int flag)
 		return 1; // 在第一分支中搜索
 	DestroyCnf(newCnf);
 	/*4.将该文字赋值为假，递归求解*/
-	newCnf = CopyCnf(cL);
+	// newCnf = CopyCnf(cL);
+	// newCnf=cL;
 	clauseList q = (clauseList)malloc(sizeof(clauseNode));
 	q->head = (literalList)malloc(sizeof(literalNode));
 	q->head->literal = -literal;
 	q->head->next = NULL;
-	q->next = newCnf;
-	newCnf = q;
-	status re = DPLL(newCnf, value, flag); // 回溯到执行分支策略的初态进入另一分支
+	q->next = cL;
+	cL = q; // 插入到表头
+	status re = DPLL(cL, value, flag); // 回溯到执行分支策略的初态进入另一分支
 	// DestroyCnf(cL);
 	return re;
 }

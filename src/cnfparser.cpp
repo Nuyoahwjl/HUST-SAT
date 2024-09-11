@@ -1,6 +1,6 @@
 /*----------------------------cnfparser----------------------------*/
 
-#include "SAT.h"
+#include "SAT.hpp"
 
 /*
  @ 函数名称: ReadFile

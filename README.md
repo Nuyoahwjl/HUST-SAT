@@ -2,7 +2,7 @@
   <img alt="GIF" src="https://media.giphy.com/media/836HiJc7pgzy8iNXCn/giphy.gif" />
 </p>
 
-~~ `HUST-CS 23级程序设计综合课程设计` ~~
+### `HUST-CS 23级程序设计综合课程设计` 
 # <a name="_toc165911183"></a>**基于SAT的对角线数独游戏求解程序**
 ## <a name="_toc165911184"></a>**1.1 问题概述**
 SAT问题即命题逻辑公式的可满足性问题（satisfiability problem），是计算机科学与人工智能基本问题，是一个典型的NP完全问题，可广泛应用于许多实际问题如硬件设计、安全协议验证等，具有重要理论意义与应用价值。SAT问题也是程序设计与竞赛的经典问题。

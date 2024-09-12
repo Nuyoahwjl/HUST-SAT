@@ -1,4 +1,6 @@
 
+  <img align="right" alt="GIF" src="https://media.giphy.com/media/836HiJc7pgzy8iNXCn/giphy.gif" />
+  
  ```HUST-CS 23级程序设计综合课程设计```
 
 # <a name="_toc165911183"></a>**基于SAT的对角线数独游戏求解程序**

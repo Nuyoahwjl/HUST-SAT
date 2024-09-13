@@ -57,6 +57,8 @@ int ChooseLiteral_1(CNF cnf); // 选择一个未赋值的文字(未优化)
 int ChooseLiteral_2(CNF cnf); // 选择一个未赋值的文字(优化)
 int ChooseLiteral_3(CNF cnf); // 改进2
 void Simplify(clauseList &cL, int literal); // 根据选择的文字化简
+status Satisfy(clauseList cL); // 判断文字是否满足
+status EmptyClause(clauseList cL); // 判断是否有空子句
 clauseList CopyCnf(clauseList cL); // 复制cnf
 status SaveResult(int result, double time, double time_, int value[],char fileName[],int boolCount); // 保存求解结果
 void X_Sudoku(); // X数独

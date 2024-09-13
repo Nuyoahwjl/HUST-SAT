@@ -259,6 +259,38 @@ int ChooseLiteral_3(CNF cnf)
 }
 
 /*
+ @ 函数名称: Satisfy
+ @ 接受参数: clauseList
+ @ 函数功能: 是否满足
+ @ 返回值: status
+*/
+status Satisfy(clauseList cL)
+{
+	if (cL == NULL)
+		return OK;
+	else
+		return ERROR;
+}
+
+/*
+ @ 函数名称: EmptyClause
+ @ 接受参数: clauseList
+ @ 函数功能: 是否有空子句
+ @ 返回值: status
+ */
+status EmptyClause(clauseList cL)
+{
+	clauseList p = cL;
+	while (p)
+	{
+		if (p->head == NULL) // 空子句，返回UNSAT
+			return TRUE;
+		p = p->next;
+	}
+	return FALSE;
+}
+
+/*
  @ 函数名称: DPLL
  @ 接受参数: clauseList,int[]
  @ 函数功能: DPLL算法求解SAT问题
@@ -273,15 +305,10 @@ status DPLL(CNF cnf, int value[], int flag)
 		value[abs(unitLiteral)] = (unitLiteral > 0) ? TRUE : FALSE;
 		Simplify(cnf->root, unitLiteral);
 		// 终止条件
-		clauseList p = cnf->root;
-		if (p == NULL)
-			return OK; // 所有都被满足了
-		while (p)
-		{
-			if (p->head == NULL) // 空子句，返回UNSAT
-				return ERROR;
-			p = p->next;
-		}
+		if (Satisfy(cnf->root) == OK)
+			return OK;
+		if (EmptyClause(cnf->root) == TRUE)
+			return ERROR;
 		unitLiteral = FindUnitClause(cnf->root);
 	}
 	/*2.选择一个未赋值的文字*/
@@ -314,7 +341,7 @@ status DPLL(CNF cnf, int value[], int flag)
 	q->head->literal = -literal;
 	q->head->next = NULL;
 	q->next = cnf->root;
-	cnf->root = q;						// 插入到表头
+	cnf->root = q; // 插入到表头
 	status re = DPLL(cnf, value, flag); // 回溯到执行分支策略的初态进入另一分支
 	// DestroyCnf(cL);
 	return re;

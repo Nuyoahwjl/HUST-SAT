@@ -16,7 +16,7 @@ void X_Sudoku()
     int board[SIZE + 1][SIZE + 1];     // 生成的初始数独
     int newBoard[SIZE + 1][SIZE + 1];  // 用来玩的数独
     int newBoard2[SIZE + 1][SIZE + 1]; // 保存答案的数独
-    int value[SIZE * SIZE * SIZE + 1]; // 记录DPLL的结果
+    bool value[SIZE * SIZE * SIZE + 1];// 记录DPLL的结果
     for (int i = 1; i <= SIZE * SIZE * SIZE; i++)
         value[i] = FALSE;
     int op = 1;   // 操作
@@ -125,7 +125,7 @@ void PrintMenu_X()
  @ 函数功能: 生成数独
  @ 返回值: status
  */
-status Generate_Sudoku(int board[SIZE + 1][SIZE + 1], int newBoard[SIZE + 1][SIZE + 1], int newBoard2[SIZE + 1][SIZE + 1], bool isFixed[SIZE + 1][SIZE + 1], int num, int value[SIZE * SIZE * SIZE + 1])
+status Generate_Sudoku(int board[SIZE + 1][SIZE + 1], int newBoard[SIZE + 1][SIZE + 1], int newBoard2[SIZE + 1][SIZE + 1], bool isFixed[SIZE + 1][SIZE + 1], int num, bool value[SIZE * SIZE * SIZE + 1])
 {
     char name[100] = "X_Sudoku.cnf"; // 文件名
 START:
@@ -532,7 +532,7 @@ status WriteToFile(int board[SIZE + 1][SIZE + 1], int num, char name[])
  @ 函数功能: DPLL求解数独
  @ 返回值: status
  */
-status Slove(int board[SIZE + 1][SIZE + 1], int value[SIZE * SIZE * SIZE + 1])
+status Slove(int board[SIZE + 1][SIZE + 1], bool value[SIZE * SIZE * SIZE + 1])
 {
     // clauseList p=NULL;
     // char name[100]="X_Sudoku.cnf";

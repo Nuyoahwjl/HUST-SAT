@@ -9,7 +9,7 @@
  */
 void DisPlay()
 {
-    int *value = NULL; // 存储文字的真值
+    bool *value = NULL; // 存储文字的真值
     // clauseList cL = NULL;
     CNF cnf = (CNF)malloc(sizeof(cnfNode));
     cnf->root = NULL;
@@ -71,7 +71,7 @@ void DisPlay()
                 newCnf->root = CopyCnf(cnf->root); // 复制CNF
                 newCnf->boolCount = cnf->boolCount;
                 newCnf->clauseCount = cnf->clauseCount;
-                value = (int *)malloc(sizeof(int) * (cnf->boolCount + 1));
+                value = (bool *)malloc(sizeof(bool) * (cnf->boolCount + 1));
                 for (int i = 1; i <= cnf->boolCount; i++)
                     value[i] = TRUE;                    // 初始化，均赋为TRUE
                 LARGE_INTEGER frequency, frequency_;    // 计时器频率

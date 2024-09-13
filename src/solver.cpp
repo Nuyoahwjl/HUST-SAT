@@ -296,7 +296,7 @@ status EmptyClause(clauseList cL)
  @ 函数功能: DPLL算法求解SAT问题
  @ 返回值: status
  */
-status DPLL(CNF cnf, int value[], int flag)
+status DPLL(CNF cnf, bool value[], int flag)
 {
 	/*1.单子句规则*/
 	int unitLiteral = FindUnitClause(cnf->root);
@@ -353,7 +353,7 @@ status DPLL(CNF cnf, int value[], int flag)
  @ 函数功能: 保存求解结果
  @ 返回值: status
  */
-status SaveResult(int result, double time, double time_, int value[], char fileName[], int boolCount)
+status SaveResult(int result, double time, double time_, bool value[], char fileName[], int boolCount)
 {
 	FILE *fp;
 	char name[100];

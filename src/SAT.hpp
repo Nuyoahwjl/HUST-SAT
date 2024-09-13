@@ -49,7 +49,7 @@ void PrintMenu(); // 打印菜单
 status ReadFile(CNF &cnf,char fileName[]); // 读取文件并解析cnf
 status DestroyCnf(clauseList &cL); // 销毁当前解析的cnf
 status PrintCnf(CNF cnf); // 打印cnf
-status DPLL(CNF cnf,int value[],int flag); // DPLL算法
+status DPLL(CNF cnf,bool value[],int flag); // DPLL算法
 status IsUnitClause(literalList l); // 判断是否为单子句
 int FindUnitClause(clauseList cL); // 找到单子句并返回该文字
 status DestroyClause(clauseList &cL); // 销毁子句
@@ -60,14 +60,14 @@ void Simplify(clauseList &cL, int literal); // 根据选择的文字化简
 status Satisfy(clauseList cL); // 判断文字是否满足
 status EmptyClause(clauseList cL); // 判断是否有空子句
 clauseList CopyCnf(clauseList cL); // 复制cnf
-status SaveResult(int result, double time, double time_, int value[],char fileName[],int boolCount); // 保存求解结果
+status SaveResult(int result, double time, double time_, bool value[],char fileName[],int boolCount); // 保存求解结果
 void X_Sudoku(); // X数独
 void PrintMenu_X(); // 打印X数独菜单
-status Generate_Sudoku(int board[SIZE+1][SIZE+1],int newBoard[SIZE+1][SIZE+1],int newBoard2[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1],int num,int value[SIZE*SIZE*SIZE+1]); // 生成数独
+status Generate_Sudoku(int board[SIZE+1][SIZE+1],int newBoard[SIZE+1][SIZE+1],int newBoard2[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1],int num,bool value[SIZE*SIZE*SIZE+1]); // 生成数独
 status Is_Valid(int board[SIZE+1][SIZE+1],int row, int col, int v); // 判断board[row][col]是否可以填入v
 void Print_Sudoku(int board[SIZE+1][SIZE+1]); // 打印数独
 void Play_Sudoku(int board[SIZE+1][SIZE+1],bool isFixed[SIZE+1][SIZE+1]); // 玩数独
 status WriteToFile(int board[SIZE+1][SIZE+1],int num,char name[]); // 将数独约束条件写入文件
-status Slove(int board[SIZE+1][SIZE+1],int value[SIZE*SIZE*SIZE+1]); // 求解数独
+status Slove(int board[SIZE+1][SIZE+1],bool value[SIZE*SIZE*SIZE+1]); // 求解数独
 status Fill_Box(int board[SIZE+1][SIZE+1], int newBoard[SIZE+1][SIZE+1],int newBoard2[SIZE+1][SIZE+1],int rowStart, int colStart); // 填充3x3的宫格
 void Shuffle(int arr[], int n); // 打乱数组

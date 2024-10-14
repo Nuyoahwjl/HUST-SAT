@@ -1,5 +1,5 @@
 
-<img src="https://user-images.githubusercontent.com/74038190/225813708-98b745f2-7d22-48cf-9150-083f1b00d6c9.gif" width="1000">
+<img src="https://user-images.githubusercontent.com/74038190/225813708-98b745f2-7d22-48cf-9150-083f1b00d6c9.gif" width="600">
 
 ### `HUST-CS 23级程序设计综合课程设计` 
 # <a name="_toc165911183"></a>**基于SAT的对角线数独游戏求解程序**

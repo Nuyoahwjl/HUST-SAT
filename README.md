@@ -231,16 +231,12 @@ SAT公式CNF文件中，一般变元是从1进行连续编码的，可以将上�
 
 [8] Uwe Pfeiffer, Tomas Karnagel and Guido Scheffler. A Sudoku-Solver for Large Puzzles using SAT. LPAR-17-short (EPiC Series, vol. 13): 52–57
 
-[9] Sudoku Puzzles Generating: from Easy to Evil.
-
-<http://zhangroup.aporc.org/images/files/Paper_3485.pdf>
+[9] Sudoku Puzzles Generating: from Easy to Evil.<http://zhangroup.aporc.org/images/files/Paper_3485.pdf>
 
 [10] 薛源海，蒋彪彬，李永卓. 基于“挖洞”思想的数独游戏生成算法. 数学的实践与认识,2009,39(21):1-7
 
 [11] 黄祖贤. 数独游戏的问题生成及求解算法优化. 安徽工业大学学报(自然科学版), 2015,32(2):187-191
 
-<a name="_hlk165907229"></a>[12] 对角线数独简介,
+[12] 对角线数独简介,<https://www.toutiao.com/article/7268970095840756224/?log\_from=c34b227a9af95\_1715086601212>
 
-https://www.toutiao.com/article/7268970095840756224/?log\_from=c34b227a9af95\_1715086601212
-
-[13] X-Sudoku online，http://www.sudoku-space.com/x-sudoku/
+[13] X-Sudoku online，<http://www.sudoku-space.com/x-sudoku/>
